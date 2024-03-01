@@ -25,9 +25,24 @@ public class Train {
         String broker = "tcp://localhost:1883";
         String clientId = trainID + "_client";
         MemoryPersistence persistence = new MemoryPersistence();
-
         try {
             client = new MqttClient(broker, clientId, persistence);
+            client.setCallback(new MqttCallback() {
+                @Override
+                public void connectionLost(Throwable throwable) {
+                    System.out.println("Connection lost: " + throwable.getMessage());
+                }
+
+                @Override
+                public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
+                    //Actually the client "train" doesn't receive any message
+                }
+
+                @Override
+                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                    System.out.println("Delivery completed: " + iMqttDeliveryToken.isComplete());
+                }
+            });
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
             System.out.println("Client "+clientId+" connecting to broker: "+broker);
@@ -85,7 +100,7 @@ public class Train {
         String message = "Speed: " + String.format("%.2f", speed) + " km/h, Temperature: " + String.format("%.2f", temperature) + " °C";
         System.out.println("Sending data to..."+node);
         try {
-            client.publish(node, message.getBytes(), 2, false);
+            client.publish(node, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }
