@@ -2,11 +2,13 @@ package train;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import train.devices.SpeedControl;
 
 
 public class Train {
     private String trainID;
     private String[] fogNodes;
+    private SpeedControl speedControl;
     private int currentLocation;
     private double speed;
     private double temperature;
@@ -17,6 +19,7 @@ public class Train {
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
         this.speed = 0.0;
+        speedControl = new SpeedControl(0);
         this.temperature = 25.0;
         setupMQTT();
     }
@@ -59,7 +62,7 @@ public class Train {
             String nextNode = fogNodes[currentLocation + 1];
             System.out.println("Train " + trainID + " has reached node " + currentNode);
 
-            speedUpdate();
+            speedControl.speedUpdate();
             tempUpdate();
             sendDataToFogNode(currentNode);
 
@@ -78,17 +81,12 @@ public class Train {
         String lastNode = fogNodes[fogNodes.length - 1];
         System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
 
-        speedUpdate();
+        speedControl.speedUpdate();
         tempUpdate();
         sendDataToFogNode(lastNode);
 
         client.disconnect();
         System.out.println("Disconnected");
-    }
-
-    private void speedUpdate() {
-        speed += (Math.random() * 10);
-        System.out.println("Actual speed: " + String.format("%.2f", speed) + " km/h");
     }
 
     private void tempUpdate() {
@@ -97,7 +95,7 @@ public class Train {
     }
 
     private void sendDataToFogNode(String node) {
-        String message = "Speed: " + String.format("%.2f", speed) + " km/h, Temperature: " + String.format("%.2f", temperature) + " °C";
+        String message = "Speed: " + String.format("%.2f", speedControl.getTrainSpeed()) + " km/h, Temperature: " + String.format("%.2f", temperature) + " °C";
         System.out.println("Sending data to..."+node);
         try {
             client.publish(node, message.getBytes(), 1, false);
