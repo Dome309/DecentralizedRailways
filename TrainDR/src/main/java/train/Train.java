@@ -3,14 +3,15 @@ package train;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import train.devices.SpeedControl;
+import train.devices.TemperatureControl;
 
 
 public class Train {
     private String trainID;
     private String[] fogNodes;
     private SpeedControl speedControl;
+    private TemperatureControl temperatureControl;
     private int currentLocation;
-    private double speed;
     private double temperature;
     private MqttClient client;
 
@@ -18,9 +19,8 @@ public class Train {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
-        this.speed = 0.0;
         speedControl = new SpeedControl(0);
-        this.temperature = 25.0;
+        temperatureControl = new TemperatureControl(25);
         setupMQTT();
     }
 
@@ -63,7 +63,7 @@ public class Train {
             System.out.println("Train " + trainID + " has reached node " + currentNode);
 
             speedControl.speedUpdate();
-            tempUpdate();
+            temperatureControl.temperatureUpdate();
             sendDataToFogNode(currentNode);
 
             System.out.println("Train " + trainID + " is heading to " + nextNode);
@@ -82,20 +82,15 @@ public class Train {
         System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
 
         speedControl.speedUpdate();
-        tempUpdate();
+        temperatureControl.temperatureUpdate();
         sendDataToFogNode(lastNode);
 
         client.disconnect();
         System.out.println("Disconnected");
     }
 
-    private void tempUpdate() {
-        temperature += Math.random() * 2 - 1;
-        System.out.println("Actual temperature: " + String.format("%.2f", temperature) + " °C");
-    }
-
     private void sendDataToFogNode(String node) {
-        String message = "Speed: " + String.format("%.2f", speedControl.getTrainSpeed()) + " km/h, Temperature: " + String.format("%.2f", temperature) + " °C";
+        String message = "Speed: " + String.format("%.2f", speedControl.getTrainSpeed()) + " km/h, Temperature: " + String.format("%.2f", temperatureControl.getTrainTemperature()) + " °C";
         System.out.println("Sending data to..."+node);
         try {
             client.publish(node, message.getBytes(), 1, false);

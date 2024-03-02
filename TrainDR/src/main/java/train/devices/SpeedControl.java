@@ -3,7 +3,7 @@ package train.devices;
 public class SpeedControl {
     double trainSpeed;
 
-    public SpeedControl(int startingSpeed){
+    public SpeedControl(double startingSpeed){
         this.trainSpeed = startingSpeed;
     }
 
