@@ -16,8 +16,8 @@ public class Train {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
-        speedControl = new SpeedControl(0, fogNodes);
-        temperatureControl = new TemperatureControl(25, fogNodes);
+        speedControl = new SpeedControl(0);
+        temperatureControl = new TemperatureControl(25);
     }
 
     public void move() throws MqttException {
