@@ -2,8 +2,9 @@ package train.devices;
 
 public class TemperatureControl {
     double trainTemperature;
+    private String[] fogNodes;
 
-    public TemperatureControl(double startingTemperature){
+    public TemperatureControl(double startingTemperature, String[] fogNodes){
         this.trainTemperature = startingTemperature;
     }
 
