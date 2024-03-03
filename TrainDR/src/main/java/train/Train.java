@@ -26,12 +26,10 @@ public class Train {
             String nextNode = fogNodes[currentLocation + 1];
             System.out.println("Train " + trainID + " has reached node " + currentNode);
 
-            speedControl.speedUpdate();
-            temperatureControl.temperatureUpdate();
-            speedControl.sendDataToFogNode(currentNode);
+            deviceUpdate();
+            sendUpdate(currentNode);
 
             System.out.println("Train " + trainID + " is heading to " + nextNode);
-
 
             currentLocation++;
 
@@ -47,10 +45,18 @@ public class Train {
         String lastNode = fogNodes[fogNodes.length - 1];
         System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
 
-        speedControl.speedUpdate();
-        temperatureControl.temperatureUpdate();
-        speedControl.sendDataToFogNode(lastNode);
+        deviceUpdate();
+        sendUpdate(lastNode);
 
         speedControl.disconnectDevice();
+    }
+
+    private void deviceUpdate(){
+        speedControl.speedUpdate();
+        temperatureControl.temperatureUpdate();
+    }
+
+    private void sendUpdate(String currentNode){
+        speedControl.sendDataToFogNode(currentNode);
     }
 }
