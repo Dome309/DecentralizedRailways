@@ -29,9 +29,4 @@ public class TemperatureControl extends Device{
     public double getTrainTemperature() {
         return trainTemperature;
     }
-
-    public void disconnectDevice() throws MqttException {
-        client.disconnect();
-        System.out.println("TemperatureControl disconnected");
-    }
 }

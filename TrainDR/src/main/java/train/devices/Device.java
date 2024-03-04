@@ -34,8 +34,12 @@ public abstract class Device implements MqttCallback {
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        System.out.println(clientId+ " delivery completed: "+token.isComplete());
+        //System.out.println(clientId+ " delivery completed: "+token.isComplete());
     }
 
     public abstract void sendDataToFogNode(String node);
+
+    public void disconnectDevice(){
+        System.out.println(clientId+" client disconnected");
+    }
 }

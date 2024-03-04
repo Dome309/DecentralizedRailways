@@ -18,12 +18,6 @@ public class SpeedControl extends Device{
         return trainSpeed;
     }
 
-
-    public void disconnectDevice() throws MqttException {
-        client.disconnect();
-        System.out.println("SpeedControl disconnected");
-    }
-
     @Override
     public void sendDataToFogNode(String node) {
         String message = "Speed: " + String.format("%.2f", trainSpeed) + " km/h";

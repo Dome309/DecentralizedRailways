@@ -15,7 +15,8 @@ public class DoorControl extends Device{
     }
 
     public void doorOpen(){
-        System.out.println("Train door is now open..");
+        System.out.println("Train door is now open...");
+        System.out.println("Passengers are getting off the train");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -25,13 +26,19 @@ public class DoorControl extends Device{
     }
 
     public void doorClose(){
-        System.out.println("Train door is now closed..");
+        System.out.println("Train door is now closed...");
         doorStatus = true;
     }
 
     @Override
     public void sendDataToFogNode(String node) {
-        String message = "Door status: " + doorStatus;
+        String closeOrOpen;
+        if (doorStatus == true) {
+            closeOrOpen = "closed";
+        }else {
+            closeOrOpen = "open";
+        }
+        String message = "Door status: " + closeOrOpen;
         System.out.println(clientId+" sending data to..."+node);
         try {
             client.publish(node, message.getBytes(), 1, false);

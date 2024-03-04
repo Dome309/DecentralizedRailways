@@ -35,9 +35,10 @@ public class Train {
                 sendUpdate(currentNode);
 
                 doorControl.doorOpen();
-                doorControl.doorClose();
-                System.out.println("Train " + trainID + " is heading to " + nextNode);
 
+                doorControl.doorClose();
+
+                System.out.println("Train " + trainID + " is heading to " + nextNode);
                 currentLocation++;
 
                 try {
@@ -58,8 +59,7 @@ public class Train {
                 sendUpdate(lastNode);
 
                 //Close the devices client
-                speedControl.disconnectDevice();
-                temperatureControl.disconnectDevice();
+                disconnectAllDevices();
             }
 
     }
@@ -72,5 +72,12 @@ public class Train {
     private void sendUpdate(String currentNode){
         speedControl.sendDataToFogNode(currentNode);
         temperatureControl.sendDataToFogNode(currentNode);
+        doorControl.sendDataToFogNode(currentNode);
+    }
+
+    private void disconnectAllDevices() throws MqttException {
+        speedControl.disconnectDevice();
+        temperatureControl.disconnectDevice();
+        doorControl.disconnectDevice();
     }
 }
