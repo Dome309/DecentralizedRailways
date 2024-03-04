@@ -2,6 +2,7 @@ package train;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import train.devices.DoorControl;
+import train.devices.LightingControl;
 import train.devices.SpeedControl;
 import train.devices.TemperatureControl;
 
@@ -13,7 +14,7 @@ public class Train {
     private SpeedControl speedControl; //Speed device declaration
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
-
+    private LightingControl lightingControl;
     public Train(String name, String[] fogNodes) {
         this.trainID = name;
         this.fogNodes = fogNodes;
@@ -21,6 +22,7 @@ public class Train {
         speedControl = new SpeedControl(broker,"SpeedControl",0);
         temperatureControl = new TemperatureControl(broker, "TemperatureControl", 25);
         doorControl = new DoorControl(broker,"DoorControl",true);
+        lightingControl = new LightingControl(broker, "LightingControl", true );
     }
 
     //Method for simulating train movement through the nodes array declared in FogNodeMain
@@ -67,17 +69,21 @@ public class Train {
     private void deviceUpdate(){
         speedControl.speedUpdate();
         temperatureControl.temperatureUpdate();
+        lightingControl.checkStatus();
     }
 
     private void sendUpdate(String currentNode){
+        System.out.println("All devices are sending data to... "+currentNode);
         speedControl.sendDataToFogNode(currentNode);
         temperatureControl.sendDataToFogNode(currentNode);
         doorControl.sendDataToFogNode(currentNode);
+        lightingControl.sendDataToFogNode(currentNode);
     }
 
     private void disconnectAllDevices() throws MqttException {
         speedControl.disconnectDevice();
         temperatureControl.disconnectDevice();
         doorControl.disconnectDevice();
+        lightingControl.disconnectDevice();
     }
 }

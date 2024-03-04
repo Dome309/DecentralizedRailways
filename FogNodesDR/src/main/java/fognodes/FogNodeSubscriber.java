@@ -29,6 +29,7 @@ class FogNodeSubscriber implements Runnable {
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
                     System.out.println(clientId+" received message on nodeTopic: " + nodeTopic);
                     System.out.println("Message: " + new String(mqttMessage.getPayload()));
+                    //TODO: improve message display
                 }
 
                 @Override
