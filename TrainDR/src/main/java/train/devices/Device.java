@@ -24,19 +24,17 @@ public abstract class Device implements MqttCallback {
     }
     @Override
     public void connectionLost(Throwable cause) {
-        System.out.println("Connection lost: " + cause.getMessage());
-        // You can handle reconnection logic here
+        System.out.println(clientId+" connection lost: " + cause.getMessage());
     }
 
     @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
-        System.out.println("Message arrived on topic: " + topic + " - Message: " + message.toString());
-        // Handle incoming messages here
+    public void messageArrived(String node, MqttMessage message) throws Exception {
+        //actually device doesn't receive any message
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        // Message delivery completed
+        System.out.println(clientId+ " delivery completed: "+token.isComplete());
     }
 
     public abstract void sendDataToFogNode(String node);
