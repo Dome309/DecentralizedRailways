@@ -4,10 +4,24 @@ import org.eclipse.paho.client.mqttv3.*;
 
 public class SpeedControl extends Device{
     double trainSpeed;
-
-    public SpeedControl(double startingSpeed){
+    public SpeedControl(String brokerUrl, String clientId , double startingSpeed){
+        super(brokerUrl, clientId);
         this.trainSpeed = startingSpeed;
-        setupMQTT();
+    }
+
+    public void speedUpdate() {
+        trainSpeed += (Math.random() * 10);
+        System.out.println("Actual speed: " + String.format("%.2f", trainSpeed) + " km/h");
+    }
+
+    public double getTrainSpeed() {
+        return trainSpeed;
+    }
+
+
+    public void disconnectDevice() throws MqttException {
+        client.disconnect();
+        System.out.println("SpeedControl disconnected");
     }
 
     @Override
@@ -19,19 +33,5 @@ public class SpeedControl extends Device{
         } catch (MqttException e) {
             e.printStackTrace();
         }
-    }
-
-    public void speedUpdate() {
-        trainSpeed += (Math.random() * 10);
-        System.out.println("Actual speed: " + String.format("%.2f", trainSpeed) + " km/h");
-    }
-
-    public double getTrainSpeed() {
-        return trainSpeed;
-    }
-    
-    public void disconnectDevice() throws MqttException {
-        client.disconnect();
-        System.out.println("SpeedControl disconnected");
     }
 }

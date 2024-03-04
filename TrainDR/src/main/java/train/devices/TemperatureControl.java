@@ -1,10 +1,24 @@
 package train.devices;
 
-public class TemperatureControl {
-    double trainTemperature;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
-    public TemperatureControl(double startingTemperature){
+public class TemperatureControl extends Device{
+    double trainTemperature;
+    public TemperatureControl(String brokerUrl, String clientId, double startingTemperature){
+        super(brokerUrl, clientId);
         this.trainTemperature = startingTemperature;
+    }
+
+    @Override
+    public void sendDataToFogNode(String node) {
+        String message = "Temperature: " + String.format("%.2f", trainTemperature) + " °C";
+        System.out.println("Sending data to..."+node);
+        try {
+            client.publish(node, message.getBytes(), 1, false);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     public void temperatureUpdate() {
@@ -14,5 +28,10 @@ public class TemperatureControl {
 
     public double getTrainTemperature() {
         return trainTemperature;
+    }
+
+    public void disconnectDevice() throws MqttException {
+        client.disconnect();
+        System.out.println("TemperatureControl disconnected");
     }
 }

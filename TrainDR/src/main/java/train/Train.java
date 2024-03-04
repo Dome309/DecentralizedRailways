@@ -11,13 +11,14 @@ public class Train {
     private SpeedControl speedControl;
     private TemperatureControl temperatureControl;
     private int currentLocation;
+    private String broker = "tcp://localhost:1883";
 
     public Train(String name, String[] fogNodes) {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
-        speedControl = new SpeedControl(0);
-        temperatureControl = new TemperatureControl(25);
+        speedControl = new SpeedControl(broker,"SpeedControl",0);
+        temperatureControl = new TemperatureControl(broker, "TemperatureControl", 25);
     }
 
     public void move() throws MqttException {
@@ -49,6 +50,7 @@ public class Train {
         sendUpdate(lastNode);
 
         speedControl.disconnectDevice();
+        temperatureControl.disconnectDevice();
     }
 
     private void deviceUpdate(){
@@ -58,5 +60,6 @@ public class Train {
 
     private void sendUpdate(String currentNode){
         speedControl.sendDataToFogNode(currentNode);
+        temperatureControl.sendDataToFogNode(currentNode);
     }
 }
