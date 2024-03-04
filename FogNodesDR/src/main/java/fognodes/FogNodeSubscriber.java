@@ -4,24 +4,25 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 class FogNodeSubscriber implements Runnable {
-    private String broker;
-    private String nodeTopic;
+    private String brokerUrl;
+    private String nodeTopic; //topic where each node is subscribed
     private String clientId;
 
     public FogNodeSubscriber(String broker, String nodeTopic, String clientId) {
-        this.broker = broker;
+        this.brokerUrl = broker;
         this.nodeTopic = nodeTopic;
         this.clientId = clientId;
     }
 
+    //each node try the connection with the broker and subscribe to a topic which is different between each node
     public void run() {
         MemoryPersistence persistence = new MemoryPersistence();
         try {
-            MqttClient client = new MqttClient(broker, clientId, persistence);
+            MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
             client.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable throwable) {
-                    System.out.println("Connection lost: " + throwable.getMessage());
+                    System.out.println(clientId+" connection lost: " + throwable.getMessage());
                 }
 
                 @Override
@@ -38,7 +39,7 @@ class FogNodeSubscriber implements Runnable {
 
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
-            System.out.println(clientId+" connecting to broker: " + broker);
+            System.out.println(clientId+" connecting to broker: " + brokerUrl);
             client.connect(connOpts);
             System.out.println(clientId+" connected to broker");
 

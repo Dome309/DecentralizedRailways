@@ -4,14 +4,13 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import train.devices.SpeedControl;
 import train.devices.TemperatureControl;
 
-
 public class Train {
     private String trainID;
-    private String[] fogNodes;
-    private SpeedControl speedControl;
-    private TemperatureControl temperatureControl;
-    private int currentLocation;
-    private String broker = "tcp://localhost:1883";
+    private String[] fogNodes; //Train route
+    private SpeedControl speedControl; //Speed device declaration
+    private TemperatureControl temperatureControl; //Temperature device declaration
+    private int currentLocation; //Index for get the current location of the train
+    private String broker = "tcp://localhost:1883"; //Broker url
 
     public Train(String name, String[] fogNodes) {
         this.trainID = name;
@@ -21,12 +20,13 @@ public class Train {
         temperatureControl = new TemperatureControl(broker, "TemperatureControl", 25);
     }
 
+    //Method for simulating train movement through the nodes array declared in FogNodeMain
     public void move() throws MqttException {
         while (currentLocation < fogNodes.length - 1) {
             String currentNode = fogNodes[currentLocation];
             String nextNode = fogNodes[currentLocation + 1];
             System.out.println("Train " + trainID + " has reached node " + currentNode);
-
+            //Update data monitored by each device and sending them to the current node
             deviceUpdate();
             sendUpdate(currentNode);
 
@@ -49,6 +49,7 @@ public class Train {
         deviceUpdate();
         sendUpdate(lastNode);
 
+        //Close the devices client
         speedControl.disconnectDevice();
         temperatureControl.disconnectDevice();
     }
