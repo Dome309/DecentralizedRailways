@@ -5,6 +5,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class TemperatureControl extends Device{
     double trainTemperature;
+    String tempSubTopic = "temp";
     public TemperatureControl(String brokerUrl, String clientId, double startingTemperature){
         super(brokerUrl, clientId);
         this.trainTemperature = startingTemperature;
@@ -15,7 +16,7 @@ public class TemperatureControl extends Device{
         String message = "Temperature: " + String.format("%.2f", trainTemperature) + " °C";
         //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(node, message.getBytes(), 1, false);
+            client.publish(node+"/"+tempSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,8 @@ public class FogNodeMain {
         //for each node is created a MQTT client as a thread
         for (String nodeTopic : fogNodes) {
             String clientId = "FogNodeSubscriber_" + nodeTopic.substring(nodeTopic.lastIndexOf('/') + 1);
-            new Thread(new FogNodeSubscriber(broker, nodeTopic, clientId)).start();
+            String topic = nodeTopic + "/#";
+            new Thread(new FogNodeSubscriber(broker, topic, clientId)).start();
         }
     }
 }

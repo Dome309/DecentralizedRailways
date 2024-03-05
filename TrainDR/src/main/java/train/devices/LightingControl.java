@@ -4,7 +4,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class LightingControl extends Device{
     boolean lightStatus;
-
+    String lightSubTopic = "light";
     public LightingControl(String brokerUrl, String clientId, boolean lightStatus) {
         super(brokerUrl, clientId);
         this.lightStatus = lightStatus;
@@ -39,7 +39,7 @@ public class LightingControl extends Device{
         String message = "Light status: " + lightOnOff;
         //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(node, message.getBytes(), 1, false);
+            client.publish(node+"/"+lightSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }
