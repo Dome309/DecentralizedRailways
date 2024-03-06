@@ -4,6 +4,7 @@ import org.eclipse.paho.client.mqttv3.*;
 
 public class SpeedControl extends Device{
     double trainSpeed;
+    String mainTopic = "devices/";
     String speedSubTopic = "speed";
     public SpeedControl(String brokerUrl, String clientId , double startingSpeed){
         super(brokerUrl, clientId);
@@ -24,7 +25,7 @@ public class SpeedControl extends Device{
         String message = "Speed: " + String.format("%.2f", trainSpeed) + " km/h";
         //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(node+"/"+speedSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic+node+"/"+speedSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

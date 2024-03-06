@@ -4,6 +4,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class DoorControl extends Device{
     Boolean doorStatus;
+    String mainTopic = "devices/";
     String doorSubTopic = "door";
     public DoorControl(String brokerUrl, String clientId, boolean doorStatus) {
         super(brokerUrl, clientId);
@@ -41,7 +42,7 @@ public class DoorControl extends Device{
         String message = "Door status: " + closeOrOpen;
         //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(node+"/"+doorSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic+node+"/"+doorSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }
