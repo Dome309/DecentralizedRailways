@@ -4,7 +4,6 @@ import org.eclipse.paho.client.mqttv3.*;
 
 public class SpeedControl extends Device{
     double trainSpeed;
-    String mainTopic = "devices/";
     String speedSubTopic = "speed";
     public SpeedControl(String brokerUrl, String clientId , double startingSpeed){
         super(brokerUrl, clientId);

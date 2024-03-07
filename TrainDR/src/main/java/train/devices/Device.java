@@ -8,7 +8,7 @@ public abstract class Device implements MqttCallback {
     protected String brokerUrl;
     protected String clientId;
     protected MemoryPersistence persistence;
-
+    protected String mainTopic = "devices/";
     public Device(String brokerUrl, String clientId){
         this.brokerUrl = brokerUrl;
         this.clientId = clientId;

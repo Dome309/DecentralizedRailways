@@ -4,7 +4,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class DoorControl extends Device{
     Boolean doorStatus;
-    String mainTopic = "devices/";
     String doorSubTopic = "door";
     public DoorControl(String brokerUrl, String clientId, boolean doorStatus) {
         super(brokerUrl, clientId);

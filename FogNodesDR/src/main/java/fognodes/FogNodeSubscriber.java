@@ -1,5 +1,7 @@
 package fognodes;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -7,7 +9,7 @@ class FogNodeSubscriber implements Runnable {
     private String brokerUrl;
     private String nodeTopic; //topic where each node is subscribed
     private String clientId;
-
+    private static final Logger logger = LogManager.getLogger(FogNodeSubscriber.class);
     public FogNodeSubscriber(String broker, String nodeTopic, String clientId) {
         this.brokerUrl = broker;
         this.nodeTopic = nodeTopic;
@@ -27,9 +29,7 @@ class FogNodeSubscriber implements Runnable {
 
                 @Override
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
-                    System.out.println(clientId+" received message on nodeTopic: " + nodeTopic);
-                    System.out.println("Message: " + new String(mqttMessage.getPayload()));
-                    //TODO: improve message display
+                    logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ "Message: " + new String(mqttMessage.getPayload()));
                 }
 
                 @Override

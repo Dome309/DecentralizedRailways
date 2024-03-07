@@ -5,7 +5,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class TemperatureControl extends Device{
     double trainTemperature;
-    String mainTopic = "devices/";
     String tempSubTopic = "temp";
     public TemperatureControl(String brokerUrl, String clientId, double startingTemperature){
         super(brokerUrl, clientId);

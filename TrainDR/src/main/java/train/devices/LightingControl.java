@@ -4,7 +4,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class LightingControl extends Device{
     boolean lightStatus;
-    String mainTopic = "devices/";
     String lightSubTopic = "light";
     public LightingControl(String brokerUrl, String clientId, boolean lightStatus) {
         super(brokerUrl, clientId);
