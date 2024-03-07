@@ -24,7 +24,7 @@ class FogNodeSubscriber implements Runnable {
             client.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable throwable) {
-                    System.out.println(clientId+" connection lost: " + throwable.getMessage());
+                    logger.error(clientId+" connection lost: " + throwable.getMessage());
                 }
 
                 @Override
