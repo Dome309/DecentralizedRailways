@@ -1,5 +1,6 @@
 package fognodes;
 
+import DBmanager.DataBaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
@@ -10,10 +11,12 @@ class FogNodeSubscriber implements Runnable {
     private String nodeTopic; //topic where each node is subscribed
     private String clientId;
     private static final Logger logger = LogManager.getLogger(FogNodeSubscriber.class);
-    public FogNodeSubscriber(String broker, String nodeTopic, String clientId) {
+    private DataBaseManager dataBaseManager;
+    public FogNodeSubscriber(String broker, String nodeTopic, String clientId, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
         this.nodeTopic = nodeTopic;
         this.clientId = clientId;
+        this.dataBaseManager = dataBaseManager;
     }
 
     //each node try the connection with the broker and subscribe to a topic which is different between each node
@@ -30,6 +33,7 @@ class FogNodeSubscriber implements Runnable {
                 @Override
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
                     logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ "Message: " + new String(mqttMessage.getPayload()));
+                    dataBaseManager.setCollectionName(clientId);
                 }
 
                 @Override

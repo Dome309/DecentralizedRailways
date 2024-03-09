@@ -11,8 +11,8 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 public class DataBaseManager {
-    public static void main(String[] args) {
-
+    String collectionName;
+    public void startDB(){
         String uri = "mongodb://localhost";
         // Construct a ServerApi instance using the ServerApi.builder() method
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
@@ -27,7 +27,7 @@ public class DataBaseManager {
                 Document commandResult = database.runCommand(command);
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
 
-                MongoCollection<Document> collection = database.getCollection("RailwayDB");
+                MongoCollection<Document> collection = database.getCollection(collectionName);
                 Document doc = new Document("train","RE5");
                 collection.insertOne(doc);
                 System.out.println("Insert compelted");
@@ -35,5 +35,10 @@ public class DataBaseManager {
                 System.err.println(me);
             }
         }
+    }
+
+    public void setCollectionName(String collectionName){
+        this.collectionName = collectionName;
+        startDB();
     }
 }
