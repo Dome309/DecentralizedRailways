@@ -3,8 +3,11 @@ package fognodes;
 import DBmanager.DataBaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import java.util.Date;
 
 class FogNodeSubscriber implements Runnable {
     private String brokerUrl;
@@ -33,7 +36,7 @@ class FogNodeSubscriber implements Runnable {
                 @Override
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
                     logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ "Message: " + new String(mqttMessage.getPayload()));
-                    dataBaseManager.setCollectionName(clientId, mqttMessage);
+                    dataBaseManager.setCollectionName(clientId, mqttMessage, new Date());
                 }
 
                 @Override

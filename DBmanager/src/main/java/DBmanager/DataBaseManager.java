@@ -8,6 +8,8 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.Date;
+
 public class DataBaseManager {
     private String uri = "mongodb://localhost";
     private String nameDB = "RailwayDB";
@@ -19,6 +21,7 @@ public class DataBaseManager {
     private String data;
     private MqttMessage messageMqtt;
     private String message;
+    private Date date;
     public void startDB(){
         //Construct a ServerApi instance using the ServerApi.builder() method
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
@@ -30,22 +33,24 @@ public class DataBaseManager {
             try {
                 MongoCollection<Document> collection = database.getCollection(collectionName);
                 splitMessage();
-                Document doc = new Document("trainId", "TO BE DEFINED")
+                Document doc = new Document("date", date)
+                        .append("trainId", "TO BE DEFINED")
                         .append("trainType", "TO BE DEFINED")
                         .append("attribute", attribute)
                         .append("status", "TO BE DEFINED")
                         .append("data", data);
                 collection.insertOne(doc);
-                System.out.println("Insert compelted");
+                System.out.println("Insert completed");
             } catch (MongoException me) {
                 System.err.println(me);
             }
         }
     }
 
-    public void setCollectionName(String collectionName, MqttMessage messageMqtt){
+    public void setCollectionName(String collectionName, MqttMessage messageMqtt, Date date){
         this.collectionName = collectionName;
         this.messageMqtt = messageMqtt;
+        this.date = date;
         startDB();
     }
 
