@@ -5,30 +5,36 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.BsonDocument;
-import org.bson.BsonInt64;
 import org.bson.Document;
-import org.bson.conversions.Bson;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class DataBaseManager {
-    String collectionName;
+    private String uri = "mongodb://localhost";
+    private String nameDB = "RailwayDB";
+    private String collectionName;
+    private String trainId;
+    private String trainType;
+    private String attribute;
+    private String status;
+    private String data;
+    private MqttMessage messageMqtt;
+    private String message;
     public void startDB(){
-        String uri = "mongodb://localhost";
-        // Construct a ServerApi instance using the ServerApi.builder() method
+        //Construct a ServerApi instance using the ServerApi.builder() method
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
         MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(new ConnectionString(uri))
                 .serverApi(serverApi).build();
-        // Create a new client and connect to the server
+        //Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase database = mongoClient.getDatabase("RailwayDB");
+            MongoDatabase database = mongoClient.getDatabase(nameDB);
             try {
-                // Send a ping to confirm a successful connection
-                Bson command = new BsonDocument("ping", new BsonInt64(1));
-                Document commandResult = database.runCommand(command);
-                System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
-
                 MongoCollection<Document> collection = database.getCollection(collectionName);
-                Document doc = new Document("train","RE5");
+                splitMessage();
+                Document doc = new Document("trainId", "TO BE DEFINED")
+                        .append("trainType", "TO BE DEFINED")
+                        .append("attribute", attribute)
+                        .append("status", "TO BE DEFINED")
+                        .append("data", data);
                 collection.insertOne(doc);
                 System.out.println("Insert compelted");
             } catch (MongoException me) {
@@ -37,8 +43,16 @@ public class DataBaseManager {
         }
     }
 
-    public void setCollectionName(String collectionName){
+    public void setCollectionName(String collectionName, MqttMessage messageMqtt){
         this.collectionName = collectionName;
+        this.messageMqtt = messageMqtt;
         startDB();
+    }
+
+    private void splitMessage(){
+        message = new String(messageMqtt.getPayload());
+        String[] splitMsg = message.split(": ");
+        attribute = splitMsg[0];
+        data = splitMsg[1];
     }
 }

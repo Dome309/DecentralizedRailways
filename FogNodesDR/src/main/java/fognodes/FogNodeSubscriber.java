@@ -33,7 +33,7 @@ class FogNodeSubscriber implements Runnable {
                 @Override
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
                     logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ "Message: " + new String(mqttMessage.getPayload()));
-                    dataBaseManager.setCollectionName(clientId);
+                    dataBaseManager.setCollectionName(clientId, mqttMessage);
                 }
 
                 @Override
@@ -44,13 +44,15 @@ class FogNodeSubscriber implements Runnable {
 
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
-            System.out.println(clientId+" connecting to broker: " + brokerUrl);
+            logger.info(clientId+" connecting to broker: " + brokerUrl);
             client.connect(connOpts);
-            System.out.println(clientId+" connected to broker");
+            logger.info(clientId+" connected to broker");
 
             client.subscribe(nodeTopic);
-            System.out.println(clientId+" subscribed to nodeTopic: " + nodeTopic);
+            logger.info(clientId+" subscribed to nodeTopic: " + nodeTopic);
+
         } catch (MqttException e) {
+            logger.warn(clientId+" could not connect");
         }
     }
 }
