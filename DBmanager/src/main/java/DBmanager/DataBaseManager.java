@@ -7,6 +7,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.simple.JSONObject;
 
 import java.util.Date;
 
@@ -22,6 +23,7 @@ public class DataBaseManager {
     private MqttMessage messageMqtt;
     private String message;
     private Date date;
+    JSONObject jsonMessage;
     public void startDB(){
         //Construct a ServerApi instance using the ServerApi.builder() method
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
@@ -32,13 +34,7 @@ public class DataBaseManager {
             MongoDatabase database = mongoClient.getDatabase(nameDB);
             try {
                 MongoCollection<Document> collection = database.getCollection(collectionName);
-                splitMessage();
-                Document doc = new Document("date", date)
-                        .append("trainId", "TO BE DEFINED")
-                        .append("trainType", "TO BE DEFINED")
-                        .append("attribute", attribute)
-                        .append("status", "TO BE DEFINED")
-                        .append("data", data);
+                Document doc = Document.parse(jsonMessage.toJSONString());
                 collection.insertOne(doc);
                 System.out.println("Insert completed");
             } catch (MongoException me) {
@@ -47,17 +43,10 @@ public class DataBaseManager {
         }
     }
 
-    public void setCollectionName(String collectionName, MqttMessage messageMqtt, Date date){
+    public void setCollectionName(String collectionName, JSONObject jsonMessage, Date date){
         this.collectionName = collectionName;
-        this.messageMqtt = messageMqtt;
+        this.jsonMessage = jsonMessage;
         this.date = date;
         startDB();
-    }
-
-    private void splitMessage(){
-        message = new String(messageMqtt.getPayload());
-        String[] splitMsg = message.split(": ");
-        attribute = splitMsg[0];
-        data = splitMsg[1];
     }
 }

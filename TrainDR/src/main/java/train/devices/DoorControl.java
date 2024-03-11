@@ -27,7 +27,7 @@ public class DoorControl extends Device{
     @Override
     public void sendDataToFogNode(String node) {
         String closeOrOpen;
-        if (deviceStatus == true) {
+        if (deviceStatus) {
             closeOrOpen = "closed";
         }else {
             closeOrOpen = "open";

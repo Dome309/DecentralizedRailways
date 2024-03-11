@@ -1,20 +1,20 @@
 package train;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
 import train.devices.DoorControl;
 import train.devices.LightingControl;
 import train.devices.SpeedControl;
 import train.devices.TemperatureControl;
 
+import static train.devices.Device.numberOfDevices;
+
 public class Train {
     private String trainID;
     private String[] fogNodes; //Train route
     private int currentLocation; //Index for get the current location of the train
-    private String broker = "tcp://localhost:1883"; //Broker url
     private SpeedControl speedControl; //Speed device declaration
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
-    private LightingControl lightingControl;
+    private LightingControl lightingControl; //Light control device declaration
     public Train(String name, String[] fogNodes) {
         this.trainID = name;
         this.fogNodes = fogNodes;
@@ -26,9 +26,9 @@ public class Train {
     }
 
     //Method for simulating train movement through the nodes array declared in FogNodeMain
-    public void move() throws MqttException {
+    public void move() {
         connectAllDevices();
-            while (currentLocation < fogNodes.length - 1 && doorControl.getDeviceStatus()) {
+            while (currentLocation < fogNodes.length - 1 && doorControl.checkDeviceStatus()) {
                 String currentNode = fogNodes[currentLocation];
                 String nextNode = fogNodes[currentLocation + 1];
                 System.out.println("Train " + trainID + " has reached node " + currentNode);
@@ -49,10 +49,10 @@ public class Train {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
+                System.out.println(numberOfDevices);
                 System.out.println("------------------------------------------------");
             }
-            if(doorControl.getDeviceStatus()){
+            if(doorControl.checkDeviceStatus()){
                 String lastNode = fogNodes[fogNodes.length - 1];
                 System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
                 doorControl.doorOpen();
@@ -63,7 +63,6 @@ public class Train {
                 //Close the devices client
                 disconnectAllDevices();
             }
-
     }
 
     private void deviceUpdate(){
@@ -80,14 +79,14 @@ public class Train {
         lightingControl.sendDataToFogNode(currentNode);
     }
 
-    private void connectAllDevices() throws MqttException {
+    private void connectAllDevices() {
         speedControl.connectDevice();
         temperatureControl.connectDevice();
         doorControl.connectDevice();
         lightingControl.connectDevice();
     }
 
-    private void disconnectAllDevices() throws MqttException {
+    private void disconnectAllDevices() {
         speedControl.disconnectDevice();
         temperatureControl.disconnectDevice();
         doorControl.disconnectDevice();

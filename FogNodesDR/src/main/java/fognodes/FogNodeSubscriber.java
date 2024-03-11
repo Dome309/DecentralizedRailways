@@ -3,9 +3,9 @@ package fognodes;
 import DBmanager.DataBaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.simple.JSONObject;
 
 import java.util.Date;
 
@@ -15,11 +15,19 @@ class FogNodeSubscriber implements Runnable {
     private String clientId;
     private static final Logger logger = LogManager.getLogger(FogNodeSubscriber.class);
     private DataBaseManager dataBaseManager;
+    private String message;
+    private String attribute;
+    private String data;
+    JSONObject jsonMessage;
+    private int devicesExpected;
+
     public FogNodeSubscriber(String broker, String nodeTopic, String clientId, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
         this.nodeTopic = nodeTopic;
         this.clientId = clientId;
         this.dataBaseManager = dataBaseManager;
+        jsonMessage = new JSONObject();
+        devicesExpected = 0;
     }
 
     //each node try the connection with the broker and subscribe to a topic which is different between each node
@@ -35,8 +43,14 @@ class FogNodeSubscriber implements Runnable {
 
                 @Override
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
-                    logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ "Message: " + new String(mqttMessage.getPayload()));
-                    dataBaseManager.setCollectionName(clientId, mqttMessage, new Date());
+                    message = new String(mqttMessage.getPayload());
+                    logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ " Message: " + message);
+                    splitMessage(message);
+                    jsonMessage.put(attribute, data);
+                    devicesExpected++;
+                    if(devicesExpected==4){
+                        dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
+                    }
                 }
 
                 @Override
@@ -57,5 +71,10 @@ class FogNodeSubscriber implements Runnable {
         } catch (MqttException e) {
             logger.warn(clientId+" could not connect");
         }
+    }
+    private void splitMessage(String message){
+        String[] splitMsg = message.split(": ");
+        this.attribute = splitMsg[0];
+        this.data = splitMsg[1];
     }
 }

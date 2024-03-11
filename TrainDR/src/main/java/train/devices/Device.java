@@ -10,11 +10,13 @@ public abstract class Device implements MqttCallback {
     protected MemoryPersistence persistence;
     protected String mainTopic = "devices/";
     protected boolean deviceStatus;
+    public static int numberOfDevices = 0;
     public Device(String clientId){
         this.deviceStatus = false;
         this.brokerUrl = "tcp://localhost:1883";
         this.clientId = clientId;
         this.persistence = new MemoryPersistence();
+        numberOfDevices++;
         try {
             client = new MqttClient(brokerUrl, clientId, persistence);
             client.setCallback(this);
@@ -50,7 +52,7 @@ public abstract class Device implements MqttCallback {
         System.out.println(clientId+" is deactivated ");
     }
 
-    public boolean getDeviceStatus(){
+    public boolean checkDeviceStatus(){
         return deviceStatus;
     }
 }
