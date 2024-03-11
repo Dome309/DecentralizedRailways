@@ -6,7 +6,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -15,13 +14,6 @@ public class DataBaseManager {
     private String uri = "mongodb://localhost";
     private String nameDB = "RailwayDB";
     private String collectionName;
-    private String trainId;
-    private String trainType;
-    private String attribute;
-    private String status;
-    private String data;
-    private MqttMessage messageMqtt;
-    private String message;
     private Date date;
     JSONObject jsonMessage;
     public void startDB(){
@@ -34,7 +26,7 @@ public class DataBaseManager {
             MongoDatabase database = mongoClient.getDatabase(nameDB);
             try {
                 MongoCollection<Document> collection = database.getCollection(collectionName);
-                Document doc = Document.parse(jsonMessage.toJSONString());
+                Document doc = Document.parse(jsonMessage.toJSONString()).append("date",date);
                 collection.insertOne(doc);
                 System.out.println("Insert completed");
             } catch (MongoException me) {
