@@ -3,25 +3,23 @@ package train.devices;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class LightingControl extends Device{
-    boolean lightStatus;
     String lightSubTopic = "light";
-    public LightingControl(String brokerUrl, String clientId, boolean lightStatus) {
-        super(brokerUrl, clientId);
-        this.lightStatus = lightStatus;
+    public LightingControl(String clientId) {
+        super(clientId);
     }
 
     public void lightOn(){
         System.out.println("Lights switched on");
-        lightStatus = true;
+        deviceStatus = true;
     }
 
     public void lightOff(){
         System.out.println("Lights switched off");
-        lightStatus = false;
+        deviceStatus = false;
     }
 
     public void checkStatus(){
-        if(lightStatus){
+        if(deviceStatus){
             System.out.println("Lights are on");
         }else{
             System.out.println("Lights are off");
@@ -31,7 +29,7 @@ public class LightingControl extends Device{
     @Override
     public void sendDataToFogNode(String node) {
         String lightOnOff;
-        if (lightStatus == true) {
+        if (deviceStatus == true) {
             lightOnOff = "on";
         }else {
             lightOnOff = "off";

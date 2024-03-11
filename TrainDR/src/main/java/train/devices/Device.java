@@ -9,11 +9,12 @@ public abstract class Device implements MqttCallback {
     protected String clientId;
     protected MemoryPersistence persistence;
     protected String mainTopic = "devices/";
-    public Device(String brokerUrl, String clientId){
-        this.brokerUrl = brokerUrl;
+    protected boolean deviceStatus;
+    public Device(String clientId){
+        this.deviceStatus = false;
+        this.brokerUrl = "tcp://localhost:1883";
         this.clientId = clientId;
         this.persistence = new MemoryPersistence();
-
         try {
             client = new MqttClient(brokerUrl, clientId, persistence);
             client.setCallback(this);
@@ -39,7 +40,17 @@ public abstract class Device implements MqttCallback {
 
     public abstract void sendDataToFogNode(String node);
 
+    public void connectDevice(){
+        this.deviceStatus = true;
+        System.out.println(clientId+" is activated ");
+    }
+
     public void disconnectDevice(){
-        System.out.println(clientId+" client disconnected");
+        this.deviceStatus = false;
+        System.out.println(clientId+" is deactivated ");
+    }
+
+    public boolean getDeviceStatus(){
+        return deviceStatus;
     }
 }

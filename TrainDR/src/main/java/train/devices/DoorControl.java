@@ -3,15 +3,9 @@ package train.devices;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class DoorControl extends Device{
-    Boolean doorStatus;
     String doorSubTopic = "door";
-    public DoorControl(String brokerUrl, String clientId, boolean doorStatus) {
-        super(brokerUrl, clientId);
-        this.doorStatus = doorStatus;
-    }
-
-    public boolean getStatus(){
-        return doorStatus;
+    public DoorControl(String clientId) {
+        super(clientId);
     }
 
     public void doorOpen(){
@@ -22,18 +16,18 @@ public class DoorControl extends Device{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        doorStatus = false;
+        deviceStatus = false;
     }
 
     public void doorClose(){
         System.out.println("Train door is now closed...");
-        doorStatus = true;
+        deviceStatus = true;
     }
 
     @Override
     public void sendDataToFogNode(String node) {
         String closeOrOpen;
-        if (doorStatus == true) {
+        if (deviceStatus == true) {
             closeOrOpen = "closed";
         }else {
             closeOrOpen = "open";
