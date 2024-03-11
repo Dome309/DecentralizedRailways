@@ -5,8 +5,6 @@ import train.devices.LightingControl;
 import train.devices.SpeedControl;
 import train.devices.TemperatureControl;
 
-import static train.devices.Device.numberOfDevices;
-
 public class Train {
     private String trainID;
     private String[] fogNodes; //Train route
@@ -49,7 +47,6 @@ public class Train {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println(numberOfDevices);
                 System.out.println("------------------------------------------------");
             }
             if(doorControl.checkDeviceStatus()){

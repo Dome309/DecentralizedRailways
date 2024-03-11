@@ -3,20 +3,45 @@ package fognodes;
 import DBmanager.DataBaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 public class FogNodeMain {
-    //Train route definition
-    public static String[] fogNodes = {"node_A", "node_B", "node_C", "node_D", "node_E"};
     private static final Logger logger = LogManager.getLogger(FogNodeMain.class);
+
     public static void main(String[] args) {
-        String broker = "tcp://localhost:1883"; //Mosquitto broker address (local)
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Insert trainId: ");
+        String trainId = scanner.nextLine();
+
+        String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)
         DataBaseManager dataBaseManager = new DataBaseManager();
         logger.info("DB initialized successfully");
-        //for each node is created a MQTT client as a thread
+
+        String[] fogNodes = readFogNodesFromFile("fog_nodes.txt", trainId);
+        // For each node, create a MQTT client as a thread
         for (String nodeTopic : fogNodes) {
             String clientId = "FogNodeSubscriber_" + nodeTopic.substring(nodeTopic.lastIndexOf('/') + 1);
-            String topic = "devices/"+nodeTopic+ "/#";
+            String topic = "devices/" + nodeTopic + "/#";
             new Thread(new FogNodeSubscriber(broker, topic, clientId, dataBaseManager)).start();
         }
+    }
+    public static String[] readFogNodesFromFile(String filename, String trainId) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":");
+                if (parts.length == 2 && parts[0].trim().equals(trainId)) {
+                    String[] nodes = parts[1].trim().split(", ");
+                    return nodes;
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error reading fog nodes from file", e);
+        }
+        return new String[0];
     }
 }
