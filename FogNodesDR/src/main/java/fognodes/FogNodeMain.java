@@ -6,22 +6,16 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 public class FogNodeMain {
     private static final Logger logger = LogManager.getLogger(FogNodeMain.class);
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Insert trainId: ");
-        String trainId = scanner.nextLine();
-
+        logger.info("CREATING NETWORK...");
         String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)
         DataBaseManager dataBaseManager = new DataBaseManager();
         logger.info("DB initialized successfully");
 
-        String[] fogNodes = readFogNodesFromFile("fog_nodes.txt", trainId);
+        String[] fogNodes = readFogNodesFromFile("nodes.txt", "nodes");
         // For each node, create a MQTT client as a thread
         for (String nodeTopic : fogNodes) {
             String clientId = "FogNodeSubscriber_" + nodeTopic.substring(nodeTopic.lastIndexOf('/') + 1);
@@ -29,12 +23,12 @@ public class FogNodeMain {
             new Thread(new FogNodeSubscriber(broker, topic, clientId, dataBaseManager)).start();
         }
     }
-    public static String[] readFogNodesFromFile(String filename, String trainId) {
+    public static String[] readFogNodesFromFile(String filename, String routes) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(":");
-                if (parts.length == 2 && parts[0].trim().equals(trainId)) {
+                if (parts.length == 2 && parts[0].trim().equals(routes)) {
                     String[] nodes = parts[1].trim().split(", ");
                     return nodes;
                 }

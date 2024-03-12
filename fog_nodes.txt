@@ -1,6 +1,5 @@
-RE5: nodeA, nodeB, nodeC, nodeD
-RE1: nodeE, nodeF, nodeG, nodeH
-RE2: nodeA1, nodeB2, nodeC3, nodeD4
-RV2030: nodeA5, nodeB6, nodeC7, nodeD8
-S10: nodeE, nodeF, nodeG, nodeH
-R22: nodeA11, nodeB22, nodeC33, nodeD44
+RE5: nodeA, nodeB, nodeC, nodeD, nodeE
+RV2030: nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM
+RE22: nodeN, nodeO, nodeP
+TN223: nodeQ, nodeR, nodeS, nodeT, nodeU, nodeV, nodeW
+Italo: nodeX, nodeY, nodeZ
