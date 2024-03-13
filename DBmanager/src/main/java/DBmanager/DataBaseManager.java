@@ -19,7 +19,6 @@ public class DataBaseManager {
 
             MongoDatabase database = mongoClient.getDatabase(nameDB);
 
-            // Retrieving a product collection
             MongoCollection<Document> collection = database.getCollection(collectionName);
 
             Document document = new Document()

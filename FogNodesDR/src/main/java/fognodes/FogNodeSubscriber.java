@@ -50,6 +50,7 @@ class FogNodeSubscriber implements Runnable {
                     devicesExpected++;
                     if(devicesExpected==4){
                         dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
+                        devicesExpected = 0;
                     }
                 }
 
