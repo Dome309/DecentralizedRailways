@@ -1,37 +1,37 @@
 package DBmanager;
 
-import com.mongodb.*;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import java.util.Date;
+import org.bson.Document;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 import org.json.simple.JSONObject;
 
-import java.util.Date;
-
 public class DataBaseManager {
-    private String uri = "mongodb://localhost";
+    private String host = "localhost";
     private String nameDB = "RailwayDB";
     private String collectionName;
     private Date date;
-    JSONObject jsonMessage;
-    public void startDB(){
-        //Construct a ServerApi instance using the ServerApi.builder() method
-        ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
-        MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(new ConnectionString(uri))
-                .serverApi(serverApi).build();
-        //Create a new client and connect to the server
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
+    private JSONObject jsonMessage;
+    public void startDB() {
+
+        try (MongoClient mongoClient = new MongoClient(host, 27017)) {
+
             MongoDatabase database = mongoClient.getDatabase(nameDB);
-            try {
-                MongoCollection<Document> collection = database.getCollection(collectionName);
-                Document doc = Document.parse(jsonMessage.toJSONString()).append("date",date);
-                collection.insertOne(doc);
-                System.out.println("Insert completed");
-            } catch (MongoException me) {
-                System.err.println(me);
-            }
+
+            // Retrieving a product collection
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+
+            Document document = new Document()
+                    .append("speed", jsonMessage.get("Speed"))
+                    .append("temp", jsonMessage.get("Temperature"))
+                    .append("door", jsonMessage.get("Door status"))
+                    .append("light", jsonMessage.get("Light status"))
+                    .append("date", date);
+            collection.insertOne(document);
+            System.out.println("Insert completed");
+        } catch (Exception exe) {
+            exe.printStackTrace();
         }
     }
 

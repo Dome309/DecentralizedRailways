@@ -17,10 +17,10 @@ public class Train {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
-        speedControl = new SpeedControl("SpeedControl",0);
-        temperatureControl = new TemperatureControl("TemperatureControl", 25);
-        doorControl = new DoorControl("DoorControl");
-        lightingControl = new LightingControl("LightingControl");
+        speedControl = new SpeedControl("SpeedControl"+trainID,0);
+        temperatureControl = new TemperatureControl("TemperatureControl"+trainID, 25);
+        doorControl = new DoorControl("DoorControl"+trainID);
+        lightingControl = new LightingControl("LightingControl"+trainID);
     }
 
     //Method for simulating train movement through the nodes array declared in FogNodeMain

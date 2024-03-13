@@ -7,13 +7,10 @@ import java.util.Scanner;
 public class TrainMain {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Insert trainId: ");
-        String trainId = scanner.nextLine();
 
-        String[] fogNodes = FogNodeMain.readFogNodesFromFile("fog_nodes.txt", trainId);
+        String[] fogNodes1 = FogNodeMain.readFogNodesFromFile("fog_nodes.txt", "RV2030");
 
-        Train train = new Train(trainId, fogNodes);
-        train.move();
+        Train train1 = new Train("RV2030", fogNodes1);
+        train1.move();
     }
 }
