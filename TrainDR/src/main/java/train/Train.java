@@ -1,14 +1,12 @@
 package train;
 
-import train.devices.DoorControl;
-import train.devices.LightingControl;
-import train.devices.SpeedControl;
-import train.devices.TemperatureControl;
+import train.devices.*;
 
 public class Train {
     private String trainID;
     private String[] fogNodes; //Train route
     private int currentLocation; //Index for get the current location of the train
+    private TrainManager trainManager;
     private SpeedControl speedControl; //Speed device declaration
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
@@ -17,6 +15,7 @@ public class Train {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
+        trainManager = new TrainManager(trainID+"_manager");
         speedControl = new SpeedControl("SpeedControl"+trainID,0);
         temperatureControl = new TemperatureControl("TemperatureControl"+trainID, 25);
         doorControl = new DoorControl("DoorControl"+trainID);
@@ -70,6 +69,7 @@ public class Train {
 
     private void sendUpdate(String currentNode){
         System.out.println("All devices are sending data to... "+currentNode);
+        trainManager.sendDataToFogNode(currentNode);
         speedControl.sendDataToFogNode(currentNode);
         temperatureControl.sendDataToFogNode(currentNode);
         doorControl.sendDataToFogNode(currentNode);
@@ -77,6 +77,7 @@ public class Train {
     }
 
     private void connectAllDevices() {
+        trainManager.connectDevice();
         speedControl.connectDevice();
         temperatureControl.connectDevice();
         doorControl.connectDevice();
@@ -84,6 +85,7 @@ public class Train {
     }
 
     private void disconnectAllDevices() {
+        trainManager.disconnectDevice();
         speedControl.disconnectDevice();
         temperatureControl.disconnectDevice();
         doorControl.disconnectDevice();

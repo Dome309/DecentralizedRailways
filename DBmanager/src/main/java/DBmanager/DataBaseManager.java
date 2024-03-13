@@ -22,6 +22,7 @@ public class DataBaseManager {
             MongoCollection<Document> collection = database.getCollection(collectionName);
 
             Document document = new Document()
+                    .append("train", jsonMessage.get("Train"))
                     .append("speed", jsonMessage.get("Speed"))
                     .append("temp", jsonMessage.get("Temperature"))
                     .append("door", jsonMessage.get("Door status"))

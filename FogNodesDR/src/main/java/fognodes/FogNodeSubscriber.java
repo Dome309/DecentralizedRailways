@@ -18,7 +18,7 @@ class FogNodeSubscriber implements Runnable {
     private String message;
     private String attribute;
     private String data;
-    JSONObject jsonMessage;
+    private JSONObject jsonMessage;
     private int devicesExpected;
 
     public FogNodeSubscriber(String broker, String nodeTopic, String clientId, DataBaseManager dataBaseManager) {
@@ -48,7 +48,7 @@ class FogNodeSubscriber implements Runnable {
                     splitMessage(message);
                     jsonMessage.put(attribute, data);
                     devicesExpected++;
-                    if(devicesExpected==4){
+                    if(devicesExpected==5){
                         dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
                         devicesExpected = 0;
                     }
