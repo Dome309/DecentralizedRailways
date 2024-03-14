@@ -1,6 +1,5 @@
 package train.devices;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class TemperatureControl extends Device{

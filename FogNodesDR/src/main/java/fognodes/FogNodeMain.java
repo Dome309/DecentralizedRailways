@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 public class FogNodeMain {
     private static final Logger logger = LogManager.getLogger(FogNodeMain.class);
-
+    String apiUrl = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
     public static void main(String[] args) {
         logger.info("CREATING NETWORK...");
         String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)
