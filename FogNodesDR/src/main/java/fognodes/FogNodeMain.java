@@ -3,39 +3,49 @@ package fognodes;
 import DBmanager.DataBaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class FogNodeMain {
     private static final Logger logger = LogManager.getLogger(FogNodeMain.class);
-    String apiUrl = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
-    public static void main(String[] args) {
-        logger.info("CREATING NETWORK...");
-        String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)
-        DataBaseManager dataBaseManager = new DataBaseManager();
-        logger.info("DB initialized successfully");
+    private static String apiUrl = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
 
-        String[] fogNodes = readFogNodesFromFile("nodes.txt", "nodes");
-        // For each node, create a MQTT client as a thread
-        for (String nodeTopic : fogNodes) {
-            String clientId = "FogNodeSubscriber_" + nodeTopic.substring(nodeTopic.lastIndexOf('/') + 1);
-            String topic = "devices/" + nodeTopic + "/#";
-            new Thread(new FogNodeSubscriber(broker, topic, clientId, dataBaseManager)).start();
-        }
-    }
-    public static String[] readFogNodesFromFile(String filename, String routes) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+    public static void main(String[] args) {
+        try {
+            logger.info("CREATING NETWORK...");
+            String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)
+            DataBaseManager dataBaseManager = new DataBaseManager();
+            logger.info("DB initialized successfully");
+            HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
+            connection.setRequestMethod("GET");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":");
-                if (parts.length == 2 && parts[0].trim().equals(routes)) {
-                    String[] nodes = parts[1].trim().split(", ");
-                    return nodes;
-                }
+                response.append(line);
             }
+            reader.close();
+
+            JSONArray jsonArray = new JSONArray(response.toString());
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String nodeName = jsonObject.getString("stop_name");
+                String clientId = "FogNodeSubscriber_" + nodeName.substring(nodeName.lastIndexOf('/') + 1);
+                String topic = "devices/" + nodeName + "/#";
+                new Thread(new FogNodeSubscriber(broker, topic, clientId, dataBaseManager)).start();
+            }
+
+            connection.disconnect();
         } catch (IOException e) {
-            logger.error("Error reading fog nodes from file", e);
+            logger.error("Network creation failed");
+            e.printStackTrace();
         }
-        return new String[0];
     }
 }
