@@ -14,6 +14,7 @@ public class TrainMain {
     private static final Logger logger = LogManager.getLogger(TrainMain.class);
     private static final String ROUTES_ID_API = "https://www.dati.lombardia.it/resource/asyc-aywm.json?$limit=50000";
     private static final String STOPS_ID_API = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json?stop_id=";
+    private static final String TRIP_ID_API = "https://www.dati.lombardia.it/resource/4z9q-hrcb.json?trip_id=";
 
     public static void main(String[] args) {
         try {
@@ -43,10 +44,10 @@ public class TrainMain {
             List<Thread> threads = new ArrayList<>();
             for (Map.Entry<String, String> entry : routeToFirstTripMap.entrySet()) {
                 String routeId = entry.getKey();
-                String firstTripId = entry.getValue();
+                String tripId = entry.getValue();
 
-                String secondApiUrl = "https://www.dati.lombardia.it/resource/4z9q-hrcb.json?trip_id=" + firstTripId;
-                HttpURLConnection secondConn = (HttpURLConnection) new URL(secondApiUrl).openConnection();
+                String tripIdAPI = TRIP_ID_API + tripId;
+                HttpURLConnection secondConn = (HttpURLConnection) new URL(tripIdAPI).openConnection();
                 secondConn.setRequestMethod("GET");
 
                 BufferedReader secondReader = new BufferedReader(new InputStreamReader(secondConn.getInputStream()));
@@ -58,7 +59,7 @@ public class TrainMain {
                 secondReader.close();
 
                 JSONArray secondJsonArray = new JSONArray(secondResponse.toString());
-                System.out.println("Train: " + routeId + " with trip Id: " + firstTripId);
+                System.out.println("Train: " + routeId + " with trip Id: " + tripId);
 
                 //TreeMap to maintain the order of arrival times
                 Map<String, String> arrivalTimesAndStopIds = new TreeMap<>();
@@ -109,7 +110,7 @@ public class TrainMain {
                 secondConn.disconnect();
             }
 
-            // Wait for all threads to finish
+            //Wait for all threads to finish
             for (Thread thread : threads) {
                 thread.join();
             }

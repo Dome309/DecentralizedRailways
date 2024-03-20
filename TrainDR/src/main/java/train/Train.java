@@ -22,7 +22,7 @@ public class Train {
         lightingControl = new LightingControl("LightingControl"+trainID);
     }
 
-    //Method for simulating train movement through the nodes array declared in FogNodeMain
+    //Method for simulating train movement through the nodes array
     public void move() {
         connectAllDevices();
             while (currentLocation < fogNodes.length - 1 && doorControl.checkDeviceStatus()) {
