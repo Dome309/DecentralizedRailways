@@ -1,5 +1,0 @@
-RE5: MILANO PORTA GARIBALDI, RHO FIERA MILANO, LEGNANO, BUSTO ARSIZIO, GALLARATE, VARESE, INDUNO OLONA, ARCISATE, BISUSCHIO-VIGGIU', PORTO CERESIO
-RV2030: nodeF, nodeG, nodeH, nodeI, nodeJ, nodeK, nodeL, nodeM
-RE22: nodeN, nodeO, nodeP
-TN223: nodeQ, nodeR, nodeS, nodeT, nodeU, nodeV, nodeW
-Italo: nodeX, nodeY, nodeZ
