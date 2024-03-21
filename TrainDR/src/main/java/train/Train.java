@@ -2,7 +2,7 @@ package train;
 
 import train.devices.*;
 
-public class Train {
+public class Train implements Runnable {
     private String trainID;
     private String[] fogNodes; //Train route
     private int currentLocation; //Index for get the current location of the train
@@ -90,5 +90,10 @@ public class Train {
         temperatureControl.disconnectDevice();
         doorControl.disconnectDevice();
         lightingControl.disconnectDevice();
+    }
+
+    @Override
+    public void run() {
+        move();
     }
 }
