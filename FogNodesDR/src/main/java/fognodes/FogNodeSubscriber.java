@@ -1,6 +1,7 @@
 package fognodes;
 
 import DBmanager.DataBaseManager;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
@@ -8,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
+import java.util.Map;
 
 class FogNodeSubscriber implements Runnable {
     private String brokerUrl;
@@ -45,8 +47,11 @@ class FogNodeSubscriber implements Runnable {
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
                     message = new String(mqttMessage.getPayload());
                     logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ " Message: " + message);
+                    Level logLevel = logger.getLevel();
                     splitMessage(message);
-                    jsonMessage.put(attribute, data);
+                    jsonMessage.putAll(Map.of(
+                            "logLevel", logLevel.name(),
+                            attribute, data));
                     devicesExpected++;
                     if(devicesExpected==5){
                         dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());

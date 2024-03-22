@@ -91,7 +91,7 @@ public class TrainMain {
             String stopId = arrivalTimesAndStopIds.get(arrivalTime);
             String apiStopUrl = STOPS_ID_API + stopId;
             JSONArray stopJsonArray = fetchDataFromApi(apiStopUrl);
-            if (stopJsonArray.length() > 0) {
+            if (!stopJsonArray.isEmpty()) {
                 JSONObject stopJsonObject = stopJsonArray.getJSONObject(0);
                 String stopName = stopJsonObject.getString("stop_name");
                 stopNamesList.add(stopName);
