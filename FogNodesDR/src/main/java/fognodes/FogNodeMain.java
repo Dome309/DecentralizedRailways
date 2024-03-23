@@ -1,6 +1,7 @@
 package fognodes;
 
 import DBmanager.DataBaseManager;
+import fognodes.UI.StartUI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -13,9 +14,11 @@ import java.net.URL;
 
 public class FogNodeMain {
     private static final Logger logger = LogManager.getLogger(FogNodeMain.class);
-    private static String apiUrl = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
 
     public static void main(String[] args) {
+        new StartUI();
+    }
+    public static void StartNetwork(String apiUrl){
         try {
             logger.info("CREATING NETWORK...");
             String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)
