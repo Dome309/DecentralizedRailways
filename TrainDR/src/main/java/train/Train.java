@@ -29,40 +29,40 @@ public class Train implements Runnable {
     //Method for simulating train movement through the nodes array
     public void move() {
         connectAllDevices();
-            while (currentLocation < fogNodes.length - 1 && doorControl.checkDeviceStatus()) {
-                String currentNode = fogNodes[currentLocation];
-                String nextNode = fogNodes[currentLocation + 1];
-                System.out.println("Train " + trainID + " has reached node " + currentNode);
+        while (currentLocation < fogNodes.length - 1 && doorControl.checkDeviceStatus()) {
+            String currentNode = fogNodes[currentLocation];
+            String nextNode = fogNodes[currentLocation + 1];
+            System.out.println("Train " + trainID + " has reached node " + currentNode +" "+ trainManager.printStationCoordinates(currentNode));
 
-                //Update data monitored by each device and sending them to the current node
-                deviceUpdate();
-                sendUpdate(currentNode);
+            //Update data monitored by each device and sending them to the current node
+            deviceUpdate();
+            sendUpdate(currentNode);
 
-                doorControl.doorOpen();
+            doorControl.doorOpen();
 
-                doorControl.doorClose();
+            doorControl.doorClose();
 
-                System.out.println("Train " + trainID + " is heading to " + nextNode);
-                currentLocation++;
+            System.out.println("Train " + trainID + " is heading to " + nextNode);
+            currentLocation++;
 
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("------------------------------------------------");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            if(doorControl.checkDeviceStatus()){
-                String lastNode = fogNodes[fogNodes.length - 1];
-                System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
-                doorControl.doorOpen();
+            System.out.println("------------------------------------------------");
+        }
+        if(doorControl.checkDeviceStatus()){
+            String lastNode = fogNodes[fogNodes.length - 1];
+            System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
+            doorControl.doorOpen();
 
-                deviceUpdate();
-                sendUpdate(lastNode);
+            deviceUpdate();
+            sendUpdate(lastNode);
 
-                //Close the devices client
-                disconnectAllDevices();
-            }
+            //Close the devices client
+            disconnectAllDevices();
+        }
     }
 
     private void deviceUpdate(){
