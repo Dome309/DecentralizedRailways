@@ -2,10 +2,12 @@ package fognodes.UI;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fognodes.FogNodeMain;
 import org.jxmapviewer.JXMapKit;
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 import javax.swing.*;
 import java.awt.*;
@@ -15,21 +17,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StartUI {
-    private final static String apiUrl = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
+    public final static String apiUrl = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
+    public static JFrame frame = new JFrame("RailwayMap");
+    public static JXMapKit mapKit = new JXMapKit(); //Create a JXMapKit for viewing the map
+    private static Set<DefaultWaypoint> waypointsTrain = new HashSet<>();
+    private static WaypointPainter<Waypoint> trainWaypointPainter = new WaypointPainter<>();
+    private static CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>();
 
-    public StartUI(){
+    public void startMap(){
         //Creating the frame
-        JFrame frame = new JFrame("RailwayMap");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create a JXMapKit for viewing the map
-        JXMapKit mapKit = new JXMapKit();
         frame.add(mapKit, BorderLayout.CENTER);
 
-        //Setting the default location and zoom level
+        //Set the default location and zoom level
         mapKit.setDefaultProvider(JXMapKit.DefaultProviders.OpenStreetMaps);
-        GeoPosition center = new GeoPosition(45.484462, 9.187875);
+        GeoPosition center = new GeoPosition(45.816444, 8.832364); // Coordinates provided
         mapKit.setAddressLocation(center);
         mapKit.setZoom(10);
 
@@ -41,7 +44,7 @@ public class StartUI {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(new URL(apiUrl));
 
-            //Add waypoints to the set
+            //Parse JSON data and add waypoints to the set
             for (JsonNode node : jsonNode) {
                 double latitude = node.get("stop_lat").asDouble();
                 double longitude = node.get("stop_lon").asDouble();
@@ -52,18 +55,28 @@ public class StartUI {
             e.printStackTrace();
         }
 
-        //Create a WaypointPainter to manage the waypoints on the map
-        WaypointPainter<DefaultWaypoint> waypointPainter = new WaypointPainter<>();
-        waypointPainter.setWaypoints(waypoints);
+        //Create a WaypointPainter to paint the station waypoints on the map
+        WaypointPainter<DefaultWaypoint> stationWaypointPainter = new WaypointPainter<>();
+        stationWaypointPainter.setWaypoints(waypoints);
+        stationWaypointPainter.setRenderer(new WaypointRender());
 
-        //Set a custom waypoint renderer
-        waypointPainter.setRenderer(new WaypointRender());
+        //Create a CompoundPainter to combine both painters
+        compoundPainter.addPainter(stationWaypointPainter);
 
-        //Add the WaypointPainter to the map
-        mapKit.getMainMap().setOverlayPainter(waypointPainter);
+        //Add the CompoundPainter to the map
+        mapKit.getMainMap().setOverlayPainter(compoundPainter);
 
-        //Display the JFrame and start the backend activity
+        //Display the JFrame
         frame.setVisible(true);
-        FogNodeMain.StartNetwork(apiUrl);
+    }
+
+    public void addWaypoints(DefaultWaypoint newWaypoint) {
+        waypointsTrain.add(newWaypoint);
+        trainWaypointPainter.setWaypoints(waypointsTrain);
+
+        compoundPainter.removePainter(trainWaypointPainter);
+        compoundPainter.addPainter(trainWaypointPainter);
+
+        mapKit.repaint();
     }
 }

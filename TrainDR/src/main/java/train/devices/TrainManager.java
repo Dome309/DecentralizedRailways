@@ -3,14 +3,19 @@ package train.devices;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jxmapviewer.viewer.DefaultWaypoint;
+import org.jxmapviewer.viewer.GeoPosition;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import static fognodes.UI.StartUI.frame;
+import static train.TrainMain.map;
 
 public class TrainManager extends Device {
-    private String trainManagerSubTopic = "trainManager";
     private static final String STOPS_ID_API = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
+    public static DefaultWaypoint trainWaypoint;
+    private String trainManagerSubTopic = "trainManager";
     private String msg;
 
     public TrainManager(String clientId) {
@@ -32,10 +37,14 @@ public class TrainManager extends Device {
             reader.close();
 
             JSONArray jsonArray = new JSONArray(response.toString());
+
             if (!jsonArray.isEmpty()) {
                 JSONObject stationInfo = jsonArray.getJSONObject(0);
                 double latitude = stationInfo.getDouble("stop_lat");
                 double longitude = stationInfo.getDouble("stop_lon");
+                frame.repaint();
+                trainWaypoint = createTrainWaypoint(latitude, longitude);
+                map.addWaypoints(trainWaypoint);
                 msg = "Latitude - " + latitude + ", Longitude - " + longitude;
 
             } else {
@@ -46,6 +55,10 @@ public class TrainManager extends Device {
         }
 
         return msg;
+    }
+
+    public static DefaultWaypoint createTrainWaypoint(double latitude, double longitude) {
+        return new DefaultWaypoint(new GeoPosition(latitude, longitude));
     }
 
     @Override

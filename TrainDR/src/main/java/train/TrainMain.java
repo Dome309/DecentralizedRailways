@@ -1,5 +1,6 @@
 package train;
 
+import fognodes.UI.StartUI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
@@ -15,9 +16,10 @@ public class TrainMain {
     private static final String ROUTES_ID_API = "https://www.dati.lombardia.it/resource/asyc-aywm.json?$limit=50000";
     private static final String STOPS_ID_API = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json?stop_id=";
     private static final String TRIP_ID_API = "https://www.dati.lombardia.it/resource/4z9q-hrcb.json?trip_id=";
-
+    public static StartUI map = new StartUI();
     public static void main(String[] args) {
         try {
+            map.startMap();
             JSONArray jsonArray = fetchDataFromApi(ROUTES_ID_API);
             Map<String, String> routes = extractRoutes(jsonArray);
             List<Thread> trainThreads = createAndStartThreads(routes);
@@ -27,6 +29,7 @@ public class TrainMain {
         }
     }
 
+    //method for put API data into a JSONArray
     private static JSONArray fetchDataFromApi(String apiUrl) throws Exception {
         HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
         conn.setRequestMethod("GET");
@@ -38,10 +41,10 @@ public class TrainMain {
             response.append(line);
         }
         reader.close();
-
         return new JSONArray(response.toString());
     }
 
+    //method for mapping train ID with their route ID from the JSONArray created
     private static Map<String, String> extractRoutes(JSONArray jsonArray) {
         Map<String, String> routes = new HashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -56,6 +59,7 @@ public class TrainMain {
         return routes;
     }
 
+    //method for creating a train route based on the matching route ID between ROUTES_ID_API and TRIP_ID_API
     private static List<Thread> createAndStartThreads(Map<String, String> routes) throws Exception {
         List<Thread> threads = new ArrayList<>();
         for (Map.Entry<String, String> entry : routes.entrySet()) {
@@ -74,6 +78,7 @@ public class TrainMain {
         return threads;
     }
 
+    //method for get the chronological train arrivals in each station
     private static Map<String, String> extractArrivalTimesAndStopIds(JSONArray jsonArray) {
         Map<String, String> arrivalTimesAndStopIds = new TreeMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -85,6 +90,7 @@ public class TrainMain {
         return arrivalTimesAndStopIds;
     }
 
+    //method for getting the station names based on their stop_id from STOPS_ID_API
     private static String[] fetchStopNames(Map<String, String> arrivalTimesAndStopIds) throws Exception {
         List<String> stopNamesList = new ArrayList<>();
         for (String arrivalTime : arrivalTimesAndStopIds.keySet()) {

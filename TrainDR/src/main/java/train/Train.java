@@ -1,6 +1,5 @@
 package train;
 
-import org.jxmapviewer.viewer.GeoPosition;
 import train.devices.*;
 
 public class Train implements Runnable {
@@ -12,9 +11,6 @@ public class Train implements Runnable {
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
     private LightingControl lightingControl; //Light control device declaration
-    private double latitude;
-    private double longitude;
-    private GeoPosition trainPosition;
     public Train(String name, String[] fogNodes) {
         this.trainID = name;
         this.fogNodes = fogNodes;

@@ -1,7 +1,6 @@
 package fognodes;
 
 import DBmanager.DataBaseManager;
-import fognodes.UI.StartUI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -11,12 +10,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import static fognodes.UI.StartUI.apiUrl;
 
 public class FogNodeMain {
     private static final Logger logger = LogManager.getLogger(FogNodeMain.class);
 
     public static void main(String[] args) {
-        new StartUI();
+        StartNetwork(apiUrl);
     }
     public static void StartNetwork(String apiUrl){
         try {
