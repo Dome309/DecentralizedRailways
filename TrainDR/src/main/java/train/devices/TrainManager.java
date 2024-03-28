@@ -5,6 +5,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
+import train.UI.TrainCustomWaypoint;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -14,12 +16,14 @@ import static train.TrainMain.map;
 
 public class TrainManager extends Device {
     private static final String STOPS_ID_API = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
-    public static DefaultWaypoint trainWaypoint;
+    public static TrainCustomWaypoint trainWaypoint;
     private String trainManagerSubTopic = "trainManager";
     private String msg;
+    private String trainID;
 
     public TrainManager(String clientId) {
         super(clientId);
+        this.trainID = clientId;
     }
 
     public String printStationCoordinates(String station) {
@@ -43,7 +47,7 @@ public class TrainManager extends Device {
                 double latitude = stationInfo.getDouble("stop_lat");
                 double longitude = stationInfo.getDouble("stop_lon");
                 frame.repaint();
-                trainWaypoint = createTrainWaypoint(latitude, longitude);
+                trainWaypoint = createTrainWaypoint(latitude, longitude, trainID);
                 map.addWaypoints(trainWaypoint);
                 msg = "Latitude - " + latitude + ", Longitude - " + longitude;
 
@@ -57,8 +61,8 @@ public class TrainManager extends Device {
         return msg;
     }
 
-    public static DefaultWaypoint createTrainWaypoint(double latitude, double longitude) {
-        return new DefaultWaypoint(new GeoPosition(latitude, longitude));
+    public static TrainCustomWaypoint createTrainWaypoint(double latitude, double longitude, String trainID) {
+        return new TrainCustomWaypoint(latitude, longitude, trainID);
     }
 
     @Override

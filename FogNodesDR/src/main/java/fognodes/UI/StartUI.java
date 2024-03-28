@@ -9,6 +9,9 @@ import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
+import train.UI.TrainCustomWaypoint;
+import train.UI.TrainWaypointRender;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -70,10 +73,10 @@ public class StartUI {
         frame.setVisible(true);
     }
 
-    public void addWaypoints(DefaultWaypoint newWaypoint) {
+    public void addWaypoints(TrainCustomWaypoint newWaypoint) {
         waypointsTrain.add(newWaypoint);
         trainWaypointPainter.setWaypoints(waypointsTrain);
-
+        trainWaypointPainter.setRenderer(new TrainWaypointRender());
         compoundPainter.removePainter(trainWaypointPainter);
         compoundPainter.addPainter(trainWaypointPainter);
 
