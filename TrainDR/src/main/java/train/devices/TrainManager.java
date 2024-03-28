@@ -22,7 +22,7 @@ public class TrainManager extends Device {
     private String trainID;
 
     public TrainManager(String clientId) {
-        super(clientId);
+        super(clientId+"_manager");
         this.trainID = clientId;
     }
 

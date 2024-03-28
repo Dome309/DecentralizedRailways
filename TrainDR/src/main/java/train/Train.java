@@ -15,7 +15,7 @@ public class Train implements Runnable {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
-        trainManager = new TrainManager(trainID+"_manager");
+        trainManager = new TrainManager(trainID);
         speedControl = new SpeedControl("SpeedControl"+trainID,0);
         temperatureControl = new TemperatureControl("TemperatureControl"+trainID, 25);
         doorControl = new DoorControl("DoorControl"+trainID);
