@@ -8,16 +8,12 @@ import java.awt.geom.Ellipse2D;
 
 
 public class WaypointRender implements WaypointRenderer<DefaultWaypoint> {
-    private int size;
-    private double x;
-    private double y;
-
     @Override
     public void paintWaypoint(Graphics2D graphics, JXMapViewer map, DefaultWaypoint waypoint) {
-        graphics.setColor(Color.RED);
-        size = 7;
-        x = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom()).getX();
-        y = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom()).getY();
+        graphics.setColor(Color.decode("#006400"));
+        int size = 7;
+        double x = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom()).getX();
+        double y = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom()).getY();
         graphics.fill(new Ellipse2D.Double(x, y, size, size));
     }
 }

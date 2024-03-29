@@ -22,12 +22,18 @@ public class TrainWaypointRender implements WaypointRenderer<Waypoint> {
             Color color = getColorForLabel(label);
             graphics.setColor(color);
             graphics.fillPolygon(new Polygon(xPoints, yPoints, 3));
-            graphics.setColor(Color.BLACK);
+            graphics.setColor(Color.WHITE);
+            graphics.setFont(graphics.getFont().deriveFont(Font.BOLD));
             FontMetrics fm = graphics.getFontMetrics();
             int labelWidth = fm.stringWidth(label);
             int labelHeight = fm.getHeight();
             int startX = (int) point.getX() - labelWidth / 2;
             int startY = (int) point.getY() - SIZE - labelHeight / 4;
+            graphics.drawString(label, startX - 1, startY);
+            graphics.drawString(label, startX + 1, startY);
+            graphics.drawString(label, startX, startY - 1);
+            graphics.drawString(label, startX, startY + 1);
+            graphics.setColor(Color.BLACK);
             graphics.drawString(label, startX, startY);
         }
     }
