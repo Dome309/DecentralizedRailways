@@ -29,15 +29,19 @@ public class StartUI {
 
     public void startMap(){
         //Creating the frame
-        frame.setSize(800, 600);
+        frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(mapKit, BorderLayout.CENTER);
+        frame.setLocationRelativeTo(null);
+        frame.setMinimumSize(new Dimension(800, 600));
 
         //Set the default location and zoom level
         mapKit.setDefaultProvider(JXMapKit.DefaultProviders.OpenStreetMaps);
-        GeoPosition center = new GeoPosition(45.816444, 8.832364); // Coordinates provided
+        GeoPosition center = new GeoPosition(45.485188,9.202954);
         mapKit.setAddressLocation(center);
         mapKit.setZoom(10);
+
+        createUILegendComponents();
 
         //Create a set of waypoints
         Set<DefaultWaypoint> waypoints = new HashSet<>();
@@ -81,5 +85,39 @@ public class StartUI {
         compoundPainter.addPainter(trainWaypointPainter);
 
         mapKit.repaint();
+    }
+
+    //method for creating
+    private void createUILegendComponents(){
+        JPanel legendPanel = new JPanel();
+        legendPanel.setLayout(null);
+        legendPanel.setPreferredSize(new Dimension(420,720));
+
+        JLabel legendTitle = new JLabel("Trenord Lines");
+        legendTitle.setBounds(135, 25, 200, 30);
+        legendTitle.setFont(new Font("Arial", Font.BOLD, 24));
+
+        JLabel label1 = new JLabel("R. Express");
+        label1.setBounds(73, 88, 100, 20);
+        label1.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JLabel label2 = new JLabel("Regionals");
+        label2.setBounds(288, 88, 100, 20);
+        label2.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JLabel label3 = new JLabel("M. Express");
+        label3.setBounds(73, 165, 100, 20);
+        label3.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JLabel label4 = new JLabel("Suburban");
+        label4.setBounds(288, 165, 100, 20);
+        label4.setFont(new Font("Arial", Font.BOLD, 16));
+
+        legendPanel.add(legendTitle);
+        legendPanel.add(label1);
+        legendPanel.add(label2);
+        legendPanel.add(label3);
+        legendPanel.add(label4);
+        frame.add(legendPanel, BorderLayout.EAST);
     }
 }
