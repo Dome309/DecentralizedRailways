@@ -91,18 +91,30 @@ public class StartUI {
     private void createUILegendComponents(){
         JPanel legendPanel = new JPanel();
         legendPanel.setLayout(null);
-        legendPanel.setPreferredSize(new Dimension(420,720));
+        legendPanel.setPreferredSize(new Dimension(420, 720));
 
         JLabel legendTitle = new JLabel("Trenord Lines");
         legendTitle.setBounds(135, 25, 200, 30);
         legendTitle.setFont(new Font("Arial", Font.BOLD, 24));
+
+        JPanel trianglePanel1 = new TriangleLabel(Color.RED);
+        trianglePanel1.setBounds(30, 88, 20, 20);
+
+        JPanel trianglePanel2 = new TriangleLabel(Color.BLUE);
+        trianglePanel2.setBounds(255, 88, 20, 20);
+
+        JPanel trianglePanel3 = new TriangleLabel(Color.ORANGE);
+        trianglePanel3.setBounds(30, 165, 20, 20);
+
+        JPanel trianglePanel4 = new TriangleLabel(Color.GREEN);
+        trianglePanel4.setBounds(255, 165, 20, 20);
 
         JLabel label1 = new JLabel("R. Express");
         label1.setBounds(73, 88, 100, 20);
         label1.setFont(new Font("Arial", Font.BOLD, 16));
 
         JLabel label2 = new JLabel("Regionals");
-        label2.setBounds(288, 88, 100, 20);
+        label2.setBounds(298, 88, 100, 20);
         label2.setFont(new Font("Arial", Font.BOLD, 16));
 
         JLabel label3 = new JLabel("M. Express");
@@ -110,7 +122,7 @@ public class StartUI {
         label3.setFont(new Font("Arial", Font.BOLD, 16));
 
         JLabel label4 = new JLabel("Suburban");
-        label4.setBounds(288, 165, 100, 20);
+        label4.setBounds(298, 165, 100, 20);
         label4.setFont(new Font("Arial", Font.BOLD, 16));
 
         legendPanel.add(legendTitle);
@@ -118,6 +130,10 @@ public class StartUI {
         legendPanel.add(label2);
         legendPanel.add(label3);
         legendPanel.add(label4);
+        legendPanel.add(trianglePanel1);
+        legendPanel.add(trianglePanel2);
+        legendPanel.add(trianglePanel3);
+        legendPanel.add(trianglePanel4);
         frame.add(legendPanel, BorderLayout.EAST);
     }
 }
