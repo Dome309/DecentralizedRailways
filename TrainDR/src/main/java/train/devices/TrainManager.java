@@ -3,8 +3,6 @@ package train.devices;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jxmapviewer.viewer.DefaultWaypoint;
-import org.jxmapviewer.viewer.GeoPosition;
 import train.UI.TrainCustomWaypoint;
 
 import java.io.BufferedReader;

@@ -97,6 +97,11 @@ public class StartUI {
         legendTitle.setBounds(135, 25, 200, 30);
         legendTitle.setFont(new Font("Arial", Font.BOLD, 24));
 
+        JTextArea errorTextArea = new JTextArea();
+        errorTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(errorTextArea);
+        scrollPane.setBounds(10, 200, 400, 300);
+
         JPanel trianglePanel1 = new TriangleLabel(Color.RED);
         trianglePanel1.setBounds(30, 88, 20, 20);
 
@@ -134,6 +139,7 @@ public class StartUI {
         legendPanel.add(trianglePanel2);
         legendPanel.add(trianglePanel3);
         legendPanel.add(trianglePanel4);
+        legendPanel.add(scrollPane);
         frame.add(legendPanel, BorderLayout.EAST);
     }
 }
