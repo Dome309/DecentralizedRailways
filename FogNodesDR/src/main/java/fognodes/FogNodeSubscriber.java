@@ -61,7 +61,7 @@ class FogNodeSubscriber implements Runnable {
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                    //Actually each fog node doesn't send any message to other clients
+                    //TODO implement a system for checking data values received and send back an error if needed
                 }
             });
 

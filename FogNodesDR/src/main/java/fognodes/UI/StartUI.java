@@ -26,6 +26,7 @@ public class StartUI {
     private static Set<DefaultWaypoint> waypointsTrain = new HashSet<>();
     private static WaypointPainter<Waypoint> trainWaypointPainter = new WaypointPainter<>();
     private static CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>();
+    public static JTextArea errorTextArea = new JTextArea();
 
     public void startMap(){
         //Creating the frame
@@ -97,7 +98,6 @@ public class StartUI {
         legendTitle.setBounds(135, 25, 200, 30);
         legendTitle.setFont(new Font("Arial", Font.BOLD, 24));
 
-        JTextArea errorTextArea = new JTextArea();
         errorTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(errorTextArea);
         scrollPane.setBounds(10, 200, 400, 300);
@@ -141,5 +141,9 @@ public class StartUI {
         legendPanel.add(trianglePanel4);
         legendPanel.add(scrollPane);
         frame.add(legendPanel, BorderLayout.EAST);
+    }
+
+    public void addError(String error){
+        errorTextArea.append(error);
     }
 }

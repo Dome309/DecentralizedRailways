@@ -1,6 +1,7 @@
 package train.devices;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import train.UI.TrainCustomWaypoint;
@@ -71,5 +72,10 @@ public class TrainManager extends Device {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void messageArrived(String node, MqttMessage message) throws Exception {
+        //TODO write the error received on GUI
     }
 }
