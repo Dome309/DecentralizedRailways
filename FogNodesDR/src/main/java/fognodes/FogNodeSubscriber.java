@@ -57,6 +57,13 @@ class FogNodeSubscriber implements Runnable {
                         dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
                         devicesExpected = 0;
                     }
+
+                    String responseMessage = "*******************TEST RECEIVED MSG*************************: ";
+                    try {
+                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+                    } catch (MqttException e) {
+                        logger.error(clientId+" failed to send response message");
+                    }
                 }
 
                 @Override

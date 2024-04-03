@@ -31,7 +31,7 @@ public abstract class Device implements MqttCallback {
     }
 
     @Override
-    public void messageArrived(String node, MqttMessage message) throws Exception {
+    public void messageArrived(String node, MqttMessage mqttMessage) throws Exception {
         //actually device doesn't receive any message
     }
 

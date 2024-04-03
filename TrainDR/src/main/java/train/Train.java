@@ -1,5 +1,6 @@
 package train;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import train.devices.*;
 
 public class Train implements Runnable {
@@ -11,7 +12,7 @@ public class Train implements Runnable {
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
     private LightingControl lightingControl; //Light control device declaration
-    public Train(String name, String[] fogNodes) {
+    public Train(String name, String[] fogNodes) throws MqttException {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;

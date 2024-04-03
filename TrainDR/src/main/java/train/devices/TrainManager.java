@@ -1,7 +1,8 @@
 package train.devices;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import train.UI.TrainCustomWaypoint;
@@ -19,10 +20,13 @@ public class TrainManager extends Device {
     private String trainManagerSubTopic = "trainManager";
     private String msg;
     private String trainID;
+    private static final Logger logger = LogManager.getLogger(TrainManager.class);
+    private String message;
 
-    public TrainManager(String clientId) {
+    public TrainManager(String clientId) throws MqttException {
         super(clientId+"_manager");
         this.trainID = clientId;
+        client.subscribe("responseTopic");
     }
 
     public String printStationCoordinates(String station) {
@@ -75,7 +79,9 @@ public class TrainManager extends Device {
     }
 
     @Override
-    public void messageArrived(String node, MqttMessage message) throws Exception {
-        //TODO write the error received on GUI
+    public void messageArrived(String node, MqttMessage mqttMessage) throws Exception {
+        message = new String(mqttMessage.getPayload());
+        logger.info(clientId+" received message on nodeTopic: " + node+ " Message: " + message);
+
     }
 }
