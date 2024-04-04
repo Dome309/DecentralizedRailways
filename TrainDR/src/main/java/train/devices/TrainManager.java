@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static fognodes.UI.StartUI.errorTextArea;
 import static fognodes.UI.StartUI.frame;
 import static train.TrainMain.map;
 
@@ -82,6 +84,6 @@ public class TrainManager extends Device {
     public void messageArrived(String node, MqttMessage mqttMessage) throws Exception {
         message = new String(mqttMessage.getPayload());
         logger.info(clientId+" received message on nodeTopic: " + node+ " Message: " + message);
-
+        errorTextArea.append(message+"\n");
     }
 }
