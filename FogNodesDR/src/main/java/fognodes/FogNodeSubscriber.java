@@ -68,7 +68,6 @@ class FogNodeSubscriber implements Runnable {
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                    //TODO implement a system for checking data values received and send back an error if needed
                 }
             });
 

@@ -8,16 +8,6 @@ public class LightingControl extends Device{
         super(clientId);
     }
 
-    public void lightOn(){
-        System.out.println("Lights switched on");
-        deviceStatus = true;
-    }
-
-    public void lightOff(){
-        System.out.println("Lights switched off");
-        deviceStatus = false;
-    }
-
     public void checkStatus(){
         if(deviceStatus){
             System.out.println("Lights are on");
