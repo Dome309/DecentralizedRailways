@@ -89,4 +89,8 @@ class FogNodeSubscriber implements Runnable {
         this.attribute = splitMsg[0];
         this.data = splitMsg[1];
     }
+
+    private void checkData(String data){
+        //TODO implement this method for check every data received by each node (ex. speed to high or too low)
+    }
 }
