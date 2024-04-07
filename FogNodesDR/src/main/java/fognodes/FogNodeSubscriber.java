@@ -8,6 +8,8 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.simple.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
@@ -44,7 +46,7 @@ class FogNodeSubscriber implements Runnable {
                 }
 
                 @Override
-                public void messageArrived(String nodeTopic, MqttMessage mqttMessage) {
+                public void messageArrived(String nodeTopic, MqttMessage mqttMessage) throws ParseException {
                     message = new String(mqttMessage.getPayload());
                     logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ " Message: " + message);
                     Level logLevel = logger.getLevel();
@@ -84,13 +86,39 @@ class FogNodeSubscriber implements Runnable {
             logger.warn(clientId+" could not connect");
         }
     }
-    private void splitMessage(String message){
+
+    private void splitMessage(String message) throws ParseException {
         String[] splitMsg = message.split(": ");
         this.attribute = splitMsg[0];
         this.data = splitMsg[1];
+        checkData(attribute, data);
     }
 
-    private void checkData(String data){
-        //TODO implement this method for check every data received by each node (ex. speed to high or too low)
+    //TODO improve this method for error management from data received
+    private void checkData(String attribute, String data) throws ParseException {
+        String valueStr;
+        switch (attribute){
+            case "Speed":
+                valueStr = extractValue(data);
+                double valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
+                break;
+            case "Temperature":
+                valueStr = extractValue(data);
+                break;
+            case "Door status":
+                valueStr = extractValue(data);
+
+                break;
+            case "Light status":
+                valueStr = extractValue(data);
+
+                break;
+        }
+    }
+
+    private String extractValue(String data){
+        String[] splitValue = data.split(" ");
+        String value = splitValue[0];
+        return value;
     }
 }
