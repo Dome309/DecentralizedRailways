@@ -24,6 +24,7 @@ class FogNodeSubscriber implements Runnable {
     private String data;
     private JSONObject jsonMessage;
     private int devicesExpected;
+    private String trainId;
 
     public FogNodeSubscriber(String broker, String nodeTopic, String clientId, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
@@ -50,7 +51,7 @@ class FogNodeSubscriber implements Runnable {
                     message = new String(mqttMessage.getPayload());
                     logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ " Message: " + message);
                     Level logLevel = logger.getLevel();
-                    splitMessage(message);
+                    splitMessage(message, client);
                     jsonMessage.putAll(Map.of(
                             "logLevel", logLevel.name(),
                             attribute, data));
@@ -60,12 +61,7 @@ class FogNodeSubscriber implements Runnable {
                         devicesExpected = 0;
                     }
 
-                    String responseMessage = "*******************TEST RECEIVED MSG*************************: ";
-                    try {
-                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
-                    } catch (MqttException e) {
-                        logger.error(clientId+" failed to send response message");
-                    }
+
                 }
 
                 @Override
@@ -87,20 +83,32 @@ class FogNodeSubscriber implements Runnable {
         }
     }
 
-    private void splitMessage(String message) throws ParseException {
+    private void splitMessage(String message, MqttClient client) throws ParseException {
         String[] splitMsg = message.split(": ");
         this.attribute = splitMsg[0];
         this.data = splitMsg[1];
-        checkData(attribute, data);
+        checkData(attribute, data, client);
     }
 
     //TODO improve this method for error management from data received
-    private void checkData(String attribute, String data) throws ParseException {
+    private synchronized void checkData(String attribute, String data, MqttClient client) throws ParseException {
         String valueStr;
+
         switch (attribute){
+            case "Train":
+                this.trainId = extractValue(data);
+                break;
             case "Speed":
                 valueStr = extractValue(data);
                 double valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
+                if (valueDouble < 15){
+                    String responseMessage = trainId+" speed too low at "+clientId;
+                    try {
+                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+                    } catch (MqttException e) {
+                        logger.error(clientId+" failed to send response message");
+                    }
+                }
                 break;
             case "Temperature":
                 valueStr = extractValue(data);
