@@ -43,13 +43,13 @@ class FogNodeSubscriber implements Runnable {
             client.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable throwable) {
-                    logger.error(clientId+" connection lost: " + throwable.getMessage());
+                    logger.error("{} connection lost: {}", clientId, throwable.getMessage());
                 }
 
                 @Override
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) throws ParseException {
                     message = new String(mqttMessage.getPayload());
-                    logger.info(clientId+" received message on nodeTopic: " + nodeTopic+ " Message: " + message);
+                    logger.info("{} received message on nodeTopic: {} Message: {}", clientId, nodeTopic, message);
                     Level logLevel = logger.getLevel();
                     splitMessage(message, client);
                     jsonMessage.putAll(Map.of(
@@ -71,15 +71,15 @@ class FogNodeSubscriber implements Runnable {
 
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
-            logger.info(clientId+" connecting to broker: " + brokerUrl);
+            logger.info("{} connecting to broker: {}", clientId, brokerUrl);
             client.connect(connOpts);
-            logger.info(clientId+" connected to broker");
+            logger.info("{} connected to broker", clientId);
 
             client.subscribe(nodeTopic);
-            logger.info(clientId+" subscribed to nodeTopic: " + nodeTopic);
+            logger.info("{} subscribed to nodeTopic: {}", clientId, nodeTopic);
 
         } catch (MqttException e) {
-            logger.warn(clientId+" could not connect");
+            logger.warn("{} could not connect", clientId);
         }
     }
 
@@ -107,7 +107,7 @@ class FogNodeSubscriber implements Runnable {
                     try {
                         client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
                     } catch (MqttException e) {
-                        logger.error(clientId+" failed to send response message");
+                        logger.error("{} failed to send speed response message", clientId);
                     }
                 }
                 break;
@@ -119,7 +119,7 @@ class FogNodeSubscriber implements Runnable {
                     try {
                         client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
                     } catch (MqttException e) {
-                        logger.error(clientId+" failed to send response message");
+                        logger.error("{} failed to send temperature response message", clientId);
                     }
                 }
                 break;
@@ -130,7 +130,7 @@ class FogNodeSubscriber implements Runnable {
                     try {
                         client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
                     } catch (MqttException e) {
-                        logger.error(clientId+" failed to send response message");
+                        logger.error("{} failed to send door status response message", clientId);
                     }
                 }
                 break;
@@ -141,7 +141,7 @@ class FogNodeSubscriber implements Runnable {
                     try {
                         client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
                     } catch (MqttException e) {
-                        logger.error(clientId+" failed to send response message");
+                        logger.error("{} failed to send light status response message", clientId);
                     }
                 }
                 break;
@@ -150,7 +150,6 @@ class FogNodeSubscriber implements Runnable {
 
     private String extractValue(String data){
         String[] splitValue = data.split(" ");
-        String value = splitValue[0];
-        return value;
+        return splitValue[0];
     }
 }
