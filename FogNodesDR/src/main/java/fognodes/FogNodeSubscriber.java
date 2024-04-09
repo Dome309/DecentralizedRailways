@@ -136,7 +136,14 @@ class FogNodeSubscriber implements Runnable {
                 break;
             case "Light status":
                 valueStr = extractValue(data);
-
+                if (valueStr.equals("off")){
+                    String responseMessage = trainId+" lights are off "+clientId;
+                    try {
+                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+                    } catch (MqttException e) {
+                        logger.error(clientId+" failed to send response message");
+                    }
+                }
                 break;
         }
     }
