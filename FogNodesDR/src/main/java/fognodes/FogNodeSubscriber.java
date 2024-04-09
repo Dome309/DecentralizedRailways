@@ -125,7 +125,14 @@ class FogNodeSubscriber implements Runnable {
                 break;
             case "Door status":
                 valueStr = extractValue(data);
-
+                if (valueStr.equals("open")){
+                    String responseMessage = trainId+" doors are open "+clientId;
+                    try {
+                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+                    } catch (MqttException e) {
+                        logger.error(clientId+" failed to send response message");
+                    }
+                }
                 break;
             case "Light status":
                 valueStr = extractValue(data);
