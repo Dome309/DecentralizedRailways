@@ -93,6 +93,7 @@ class FogNodeSubscriber implements Runnable {
     //TODO improve this method for error management from data received
     private synchronized void checkData(String attribute, String data, MqttClient client) throws ParseException {
         String valueStr;
+        double valueDouble;
 
         switch (attribute){
             case "Train":
@@ -100,7 +101,7 @@ class FogNodeSubscriber implements Runnable {
                 break;
             case "Speed":
                 valueStr = extractValue(data);
-                double valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
+                valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 15){
                     String responseMessage = trainId+" speed too low at "+clientId;
                     try {
@@ -112,6 +113,15 @@ class FogNodeSubscriber implements Runnable {
                 break;
             case "Temperature":
                 valueStr = extractValue(data);
+                valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
+                if (valueDouble < 25){
+                    String responseMessage = trainId+" temperature too low at "+clientId;
+                    try {
+                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+                    } catch (MqttException e) {
+                        logger.error(clientId+" failed to send response message");
+                    }
+                }
                 break;
             case "Door status":
                 valueStr = extractValue(data);
