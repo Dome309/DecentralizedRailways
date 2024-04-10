@@ -14,11 +14,11 @@ import java.util.Date;
 import java.util.Map;
 
 class FogNodeSubscriber implements Runnable {
-    private String brokerUrl;
-    private String nodeTopic; //topic where each node is subscribed
-    private String clientId;
     private static final Logger logger = LogManager.getLogger(FogNodeSubscriber.class);
-    private DataBaseManager dataBaseManager;
+    private final String brokerUrl;
+    private final String nodeTopic; //topic where each node is subscribed
+    private final String clientId;
+    private final DataBaseManager dataBaseManager;
     private String message;
     private String attribute;
     private String data;
@@ -87,69 +87,54 @@ class FogNodeSubscriber implements Runnable {
         String[] splitMsg = message.split(": ");
         this.attribute = splitMsg[0];
         this.data = splitMsg[1];
-        checkData(attribute, data, client);
+        checkData(client, attribute, data);
     }
 
-    //TODO improve this method for error management from data received
-    private synchronized void checkData(String attribute, String data, MqttClient client) throws ParseException {
+    private synchronized void checkData(MqttClient client, String attribute, String data) throws ParseException {
         String valueStr;
         double valueDouble;
-
-        switch (attribute){
+        switch (attribute) {
             case "Train":
                 this.trainId = extractValue(data);
                 break;
             case "Speed":
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
-                if (valueDouble < 15){
-                    String responseMessage = trainId+" speed too low at "+clientId;
-                    try {
-                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
-                    } catch (MqttException e) {
-                        logger.error("{} failed to send speed response message", clientId);
-                    }
+                if (valueDouble < 15) {
+                    sendResponse(client, trainId + " speed too low at " + clientId);
                 }
                 break;
             case "Temperature":
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
-                if (valueDouble < 25){
-                    String responseMessage = trainId+" temperature too low at "+clientId;
-                    try {
-                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
-                    } catch (MqttException e) {
-                        logger.error("{} failed to send temperature response message", clientId);
-                    }
+                if (valueDouble < 25) {
+                    sendResponse(client, trainId + " temperature too low at " + clientId);
                 }
                 break;
             case "Door status":
                 valueStr = extractValue(data);
-                if (valueStr.equals("open")){
-                    String responseMessage = trainId+" doors are open "+clientId;
-                    try {
-                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
-                    } catch (MqttException e) {
-                        logger.error("{} failed to send door status response message", clientId);
-                    }
+                if ("open".equals(valueStr)) {
+                    sendResponse(client, trainId + " doors are open " + clientId);
                 }
                 break;
             case "Light status":
                 valueStr = extractValue(data);
-                if (valueStr.equals("off")){
-                    String responseMessage = trainId+" lights are off "+clientId;
-                    try {
-                        client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
-                    } catch (MqttException e) {
-                        logger.error("{} failed to send light status response message", clientId);
-                    }
+                if ("off".equals(valueStr)) {
+                    sendResponse(client, trainId + " lights are off " + clientId);
                 }
                 break;
         }
     }
 
-    private String extractValue(String data){
-        String[] splitValue = data.split(" ");
-        return splitValue[0];
+    private String extractValue(String data) {
+        return data.split(" ")[0];
+    }
+
+    private void sendResponse(MqttClient client, String responseMessage) {
+        try {
+            client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+        } catch (MqttException e) {
+            logger.error("{} failed to send response message", clientId);
+        }
     }
 }
