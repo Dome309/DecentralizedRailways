@@ -19,7 +19,7 @@ public class LightingControl extends Device{
     @Override
     public void sendDataToFogNode(String node) {
         String lightOnOff;
-        if (deviceStatus == true) {
+        if (deviceStatus) {
             lightOnOff = "on";
         }else {
             lightOnOff = "off";

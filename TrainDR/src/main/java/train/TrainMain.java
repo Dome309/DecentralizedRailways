@@ -17,6 +17,8 @@ public class TrainMain {
     private static final String STOPS_ID_API = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json?stop_id=";
     private static final String TRIP_ID_API = "https://www.dati.lombardia.it/resource/4z9q-hrcb.json?trip_id=";
     public static StartUI map = new StartUI();
+
+    //main method for launching the train simulation
     public static void main(String[] args) {
         try {
             map.startMap();
@@ -25,7 +27,7 @@ public class TrainMain {
             List<Thread> trainThreads = createAndStartThreads(routes);
             waitAllThreads(trainThreads);
         } catch (Exception e) {
-            logger.warn("API ERROR");
+            logger.error("API ERROR");
         }
     }
 

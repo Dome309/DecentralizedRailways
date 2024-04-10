@@ -1,6 +1,9 @@
 package DBmanager;
 
 import java.util.Date;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -8,19 +11,16 @@ import com.mongodb.client.MongoDatabase;
 import org.json.simple.JSONObject;
 
 public class DataBaseManager {
-    private String host = "localhost";
-    private String nameDB = "RailwayDB";
     private String collectionName;
     private Date date;
     private JSONObject jsonMessage;
+    private static final Logger logger = LogManager.getLogger(DataBaseManager.class);
+
     public void startDB() {
-
-        try (MongoClient mongoClient = new MongoClient(host, 27017)) {
-
-            MongoDatabase database = mongoClient.getDatabase(nameDB);
-
+        String databaseName = "RailwayDB";
+        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
             MongoCollection<Document> collection = database.getCollection(collectionName);
-
             Document document = new Document()
                     .append("logLevel", jsonMessage.get("logLevel"))
                     .append("train", jsonMessage.get("Train"))
@@ -30,9 +30,9 @@ public class DataBaseManager {
                     .append("light", jsonMessage.get("Light status"))
                     .append("date", date);
             collection.insertOne(document);
-            System.out.println("Insert completed");
+            logger.info("{} data insert completed", databaseName);
         } catch (Exception exe) {
-            exe.printStackTrace();
+            logger.error("Database insert failed");
         }
     }
 

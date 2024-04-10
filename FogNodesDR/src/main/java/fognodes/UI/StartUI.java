@@ -142,8 +142,4 @@ public class StartUI {
         legendPanel.add(scrollPane);
         frame.add(legendPanel, BorderLayout.EAST);
     }
-
-    public void addError(String error){
-        errorTextArea.append(error);
-    }
 }

@@ -16,8 +16,8 @@ public class TriangleLabel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setColor(color);
-        int x[] = {0, getWidth() / 2, getWidth()};
-        int y[] = {0, getHeight(), 0};
+        int[] x = {0, getWidth() / 2, getWidth()};
+        int[] y = {0, getHeight(), 0};
         Polygon p = new Polygon(x, y, 3);
         g2d.fill(p);
         g2d.dispose();
