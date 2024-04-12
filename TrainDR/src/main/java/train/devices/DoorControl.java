@@ -2,13 +2,14 @@ package train.devices;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-public class DoorControl extends Device{
+public class DoorControl extends Device {
     String doorSubTopic = "door";
+
     public DoorControl(String clientId) {
         super(clientId);
     }
 
-    public void doorOpen(){
+    public void doorOpen() {
         System.out.println("Train door is now open...");
         System.out.println("Passengers are getting off the train");
         try {
@@ -19,7 +20,7 @@ public class DoorControl extends Device{
         deviceStatus = false;
     }
 
-    public void doorClose(){
+    public void doorClose() {
         System.out.println("Train door is now closed...");
         deviceStatus = true;
     }
@@ -29,13 +30,12 @@ public class DoorControl extends Device{
         String closeOrOpen;
         if (deviceStatus) {
             closeOrOpen = "closed";
-        }else {
+        } else {
             closeOrOpen = "open";
         }
         String message = "Door status: " + closeOrOpen;
-        //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(mainTopic+node+"/"+doorSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + doorSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

@@ -11,7 +11,8 @@ public abstract class Device implements MqttCallback {
     protected String mainTopic = "devices/";
     protected boolean deviceStatus;
     public static int numberOfDevices = 0;
-    public Device(String clientId){
+
+    public Device(String clientId) {
         this.deviceStatus = false;
         this.brokerUrl = "tcp://localhost:1883";
         this.clientId = clientId;
@@ -25,34 +26,35 @@ public abstract class Device implements MqttCallback {
             e.printStackTrace();
         }
     }
+
     @Override
     public void connectionLost(Throwable cause) {
-        System.out.println(clientId+" connection lost: " + cause.getMessage());
+        System.out.println(clientId + " connection lost: " + cause.getMessage());
     }
 
     @Override
-    public void messageArrived(String node, MqttMessage mqttMessage) throws Exception {
-        //actually device doesn't receive any message
+    public void messageArrived(String node, MqttMessage mqttMessage) {
+
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        //System.out.println(clientId+ " delivery completed: "+token.isComplete());
+
     }
 
     public abstract void sendDataToFogNode(String node);
 
-    public void connectDevice(){
+    public void connectDevice() {
         this.deviceStatus = true;
-        System.out.println(clientId+" is activated ");
+        System.out.println(clientId + " is activated ");
     }
 
-    public void disconnectDevice(){
+    public void disconnectDevice() {
         this.deviceStatus = false;
-        System.out.println(clientId+" is deactivated ");
+        System.out.println(clientId + " is deactivated ");
     }
 
-    public boolean checkDeviceStatus(){
+    public boolean checkDeviceStatus() {
         return deviceStatus;
     }
 }

@@ -2,16 +2,17 @@ package train.devices;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-public class LightingControl extends Device{
+public class LightingControl extends Device {
     String lightSubTopic = "light";
+
     public LightingControl(String clientId) {
         super(clientId);
     }
 
-    public void checkStatus(){
-        if(deviceStatus){
+    public void checkStatus() {
+        if (deviceStatus) {
             System.out.println("Lights are on");
-        }else{
+        } else {
             System.out.println("Lights are off");
         }
     }
@@ -21,13 +22,12 @@ public class LightingControl extends Device{
         String lightOnOff;
         if (deviceStatus) {
             lightOnOff = "on";
-        }else {
+        } else {
             lightOnOff = "off";
         }
         String message = "Light status: " + lightOnOff;
-        //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(mainTopic+node+"/"+lightSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + lightSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

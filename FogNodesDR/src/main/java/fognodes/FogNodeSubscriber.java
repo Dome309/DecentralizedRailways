@@ -25,6 +25,7 @@ class FogNodeSubscriber implements Runnable {
     private JSONObject jsonMessage;
     private int devicesExpected;
     private String trainId;
+    private String responseTopic;
 
     public FogNodeSubscriber(String broker, String nodeTopic, String clientId, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
@@ -95,6 +96,7 @@ class FogNodeSubscriber implements Runnable {
         double valueDouble;
         switch (attribute) {
             case "Train":
+                this.responseTopic = data;
                 this.trainId = extractValue(data);
                 break;
             case "Speed":
@@ -132,7 +134,7 @@ class FogNodeSubscriber implements Runnable {
 
     private void sendResponse(MqttClient client, String responseMessage) {
         try {
-            client.publish("responseTopic", responseMessage.getBytes(), 1, false);
+            client.publish("responseTopic/"+responseTopic, responseMessage.getBytes(), 1, false);
         } catch (MqttException e) {
             logger.error("{} failed to send response message", clientId);
         }

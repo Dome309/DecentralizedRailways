@@ -3,6 +3,7 @@ package fognodes.UI;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.WaypointRenderer;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 

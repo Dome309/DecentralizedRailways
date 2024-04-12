@@ -25,9 +25,9 @@ public class TrainManager extends Device {
     private static final Logger logger = LogManager.getLogger(TrainManager.class);
 
     public TrainManager(String clientId) throws MqttException {
-        super(clientId+"_manager");
+        super(clientId + "_manager");
         this.trainID = clientId;
-        client.subscribe("responseTopic");
+        client.subscribe("responseTopic/" + clientId + "_manager");
     }
 
     public String printStationCoordinates(String station) {
@@ -73,7 +73,7 @@ public class TrainManager extends Device {
     public void sendDataToFogNode(String node) {
         String message = "Train: " + clientId;
         try {
-            client.publish(mainTopic+node+"/"+trainManagerSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + trainManagerSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -83,6 +83,6 @@ public class TrainManager extends Device {
     public void messageArrived(String node, MqttMessage mqttMessage) {
         String message = new String(mqttMessage.getPayload());
         logger.info("{} received message on nodeTopic: {} Message: {}", clientId, node, message);
-        errorTextArea.append(message +"\n");
+        errorTextArea.append(message + "\n");
     }
 }

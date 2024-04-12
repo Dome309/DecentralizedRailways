@@ -5,11 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import static fognodes.UI.StartUI.apiUrl;
 
 public class FogNodeMain {
@@ -18,7 +20,8 @@ public class FogNodeMain {
     public static void main(String[] args) {
         StartNetwork(apiUrl);
     }
-    public static void StartNetwork(String apiUrl){
+
+    public static void StartNetwork(String apiUrl) {
         try {
             logger.info("CREATING NETWORK...");
             String broker = "tcp://localhost:1883"; // Mosquitto broker address (local)

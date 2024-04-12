@@ -3,9 +3,12 @@ package train;
 import fognodes.UI.StartUI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;

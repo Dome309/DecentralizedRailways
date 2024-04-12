@@ -2,16 +2,17 @@ package train.devices;
 
 import org.eclipse.paho.client.mqttv3.*;
 
-public class SpeedControl extends Device{
+public class SpeedControl extends Device {
     double trainSpeed;
     String speedSubTopic = "speed";
-    public SpeedControl(String clientId , double startingSpeed){
+
+    public SpeedControl(String clientId, double startingSpeed) {
         super(clientId);
         this.trainSpeed = startingSpeed;
     }
 
     public void speedUpdate() {
-        trainSpeed += (Math.random() * 10);
+        trainSpeed += (Math.random() * 100);
         System.out.println("Actual speed: " + String.format("%.2f", trainSpeed) + " km/h");
     }
 
@@ -24,7 +25,7 @@ public class SpeedControl extends Device{
         String message = "Speed: " + String.format("%.2f", trainSpeed) + " km/h";
         //System.out.println(clientId+" sending data to..."+node);
         try {
-            client.publish(mainTopic+node+"/"+speedSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + speedSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

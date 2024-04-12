@@ -28,7 +28,7 @@ public class StartUI {
     private static CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>();
     public static JTextArea errorTextArea = new JTextArea();
 
-    public void startMap(){
+    public void startMap() {
         //Creating the frame
         frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,7 +38,7 @@ public class StartUI {
 
         //Set the default location and zoom level
         mapKit.setDefaultProvider(JXMapKit.DefaultProviders.OpenStreetMaps);
-        GeoPosition center = new GeoPosition(45.485188,9.202954);
+        GeoPosition center = new GeoPosition(45.485188, 9.202954);
         mapKit.setAddressLocation(center);
         mapKit.setZoom(10);
 
@@ -89,7 +89,7 @@ public class StartUI {
     }
 
     //method for creating
-    private void createUILegendComponents(){
+    private void createUILegendComponents() {
         JPanel legendPanel = new JPanel();
         legendPanel.setLayout(null);
         legendPanel.setPreferredSize(new Dimension(420, 720));

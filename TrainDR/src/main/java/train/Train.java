@@ -12,15 +12,16 @@ public class Train implements Runnable {
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
     private LightingControl lightingControl; //Light control device declaration
+
     public Train(String name, String[] fogNodes) throws MqttException {
         this.trainID = name;
         this.fogNodes = fogNodes;
         this.currentLocation = 0;
         trainManager = new TrainManager(trainID);
-        speedControl = new SpeedControl("SpeedControl"+trainID,0);
-        temperatureControl = new TemperatureControl("TemperatureControl"+trainID, 25);
-        doorControl = new DoorControl("DoorControl"+trainID);
-        lightingControl = new LightingControl("LightingControl"+trainID);
+        speedControl = new SpeedControl("SpeedControl" + trainID, 0);
+        temperatureControl = new TemperatureControl("TemperatureControl" + trainID, 25);
+        doorControl = new DoorControl("DoorControl" + trainID);
+        lightingControl = new LightingControl("LightingControl" + trainID);
     }
 
     //Method for simulating train movement through the nodes array
@@ -29,7 +30,7 @@ public class Train implements Runnable {
         while (currentLocation < fogNodes.length - 1 && doorControl.checkDeviceStatus()) {
             String currentNode = fogNodes[currentLocation];
             String nextNode = fogNodes[currentLocation + 1];
-            System.out.println("Train " + trainID + " has reached node " + currentNode +" "+ trainManager.printStationCoordinates(currentNode));
+            System.out.println("Train " + trainID + " has reached node " + currentNode + " " + trainManager.printStationCoordinates(currentNode));
 
             //Update data monitored by each device and sending them to the current node
             deviceUpdate();
@@ -49,7 +50,7 @@ public class Train implements Runnable {
             }
             System.out.println("------------------------------------------------");
         }
-        if(doorControl.checkDeviceStatus()){
+        if (doorControl.checkDeviceStatus()) {
             String lastNode = fogNodes[fogNodes.length - 1];
             System.out.println("Train " + trainID + " has arrived at its destination at node " + lastNode);
             doorControl.doorOpen();
@@ -62,14 +63,14 @@ public class Train implements Runnable {
         }
     }
 
-    private void deviceUpdate(){
+    private void deviceUpdate() {
         speedControl.speedUpdate();
         temperatureControl.temperatureUpdate();
         lightingControl.checkStatus();
     }
 
-    private void sendUpdate(String currentNode){
-        System.out.println("All devices are sending data to... "+currentNode);
+    private void sendUpdate(String currentNode) {
+        System.out.println("All devices are sending data to... " + currentNode);
         trainManager.sendDataToFogNode(currentNode);
         speedControl.sendDataToFogNode(currentNode);
         temperatureControl.sendDataToFogNode(currentNode);
