@@ -132,7 +132,7 @@ class FogNodeSubscriber implements Runnable {
 
     private void sendResponse(MqttClient client, String responseMessage) {
         try {
-            client.publish("responseTopic", new MqttMessage(responseMessage.getBytes()));
+            client.publish("responseTopic", responseMessage.getBytes(), 1, false);
         } catch (MqttException e) {
             logger.error("{} failed to send response message", clientId);
         }

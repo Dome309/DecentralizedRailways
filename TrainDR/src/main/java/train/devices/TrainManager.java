@@ -23,7 +23,6 @@ public class TrainManager extends Device {
     private String msg;
     private String trainID;
     private static final Logger logger = LogManager.getLogger(TrainManager.class);
-    private String message;
 
     public TrainManager(String clientId) throws MqttException {
         super(clientId+"_manager");
@@ -81,9 +80,9 @@ public class TrainManager extends Device {
     }
 
     @Override
-    public void messageArrived(String node, MqttMessage mqttMessage) throws Exception {
-        message = new String(mqttMessage.getPayload());
-        logger.info(clientId+" received message on nodeTopic: " + node+ " Message: " + message);
-        errorTextArea.append(message+"\n");
+    public void messageArrived(String node, MqttMessage mqttMessage) {
+        String message = new String(mqttMessage.getPayload());
+        logger.info("{} received message on nodeTopic: {} Message: {}", clientId, node, message);
+        errorTextArea.append(message +"\n");
     }
 }
