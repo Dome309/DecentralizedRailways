@@ -7,13 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import train.UI.TrainCustomWaypoint;
 
+import javax.swing.text.BadLocationException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static fognodes.UI.StartUI.errorTextArea;
-import static fognodes.UI.StartUI.frame;
+import static fognodes.UI.StartUI.*;
 import static train.TrainMain.map;
 
 public class TrainManager extends Device {
@@ -83,6 +83,10 @@ public class TrainManager extends Device {
     public void messageArrived(String node, MqttMessage mqttMessage) {
         String message = new String(mqttMessage.getPayload());
         logger.info("{} received message on nodeTopic: {} Message: {}", clientId, node, message);
-        errorTextArea.append(message + "\n");
+        try {
+            errorTextAreaDocument.insertString(errorTextAreaDocument.getLength(), message + "\n", null);
+        } catch (BadLocationException e) {
+            logger.error(e.getMessage());
+        }
     }
 }

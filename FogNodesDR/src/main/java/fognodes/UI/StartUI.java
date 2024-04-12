@@ -13,6 +13,7 @@ import train.UI.TrainCustomWaypoint;
 import train.UI.TrainWaypointRender;
 
 import javax.swing.*;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +27,8 @@ public class StartUI {
     private static Set<DefaultWaypoint> waypointsTrain = new HashSet<>();
     private static WaypointPainter<Waypoint> trainWaypointPainter = new WaypointPainter<>();
     private static CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>();
-    public static JTextArea errorTextArea = new JTextArea();
+    private static JTextPane errorTextArea = new JTextPane();
+    public static StyledDocument errorTextAreaDocument = errorTextArea.getStyledDocument();
 
     public void startMap() {
         //Creating the frame
