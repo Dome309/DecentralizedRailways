@@ -102,7 +102,7 @@ public class StartUI {
 
         errorTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(errorTextArea);
-        scrollPane.setBounds(10, 200, 400, 300);
+        scrollPane.setBounds(10, 275, 400, 300);
 
         JPanel trianglePanel1 = new TriangleLabel(Color.RED);
         trianglePanel1.setBounds(30, 88, 20, 20);
@@ -132,11 +132,16 @@ public class StartUI {
         label4.setBounds(298, 165, 100, 20);
         label4.setFont(new Font("Arial", Font.BOLD, 16));
 
+        JLabel label5 = new JLabel("Error logs");
+        label5.setBounds(160, 240, 200, 30);
+        label5.setFont(new Font("Arial", Font.BOLD, 24));
+
         legendPanel.add(legendTitle);
         legendPanel.add(label1);
         legendPanel.add(label2);
         legendPanel.add(label3);
         legendPanel.add(label4);
+        legendPanel.add(label5);
         legendPanel.add(trianglePanel1);
         legendPanel.add(trianglePanel2);
         legendPanel.add(trianglePanel3);
