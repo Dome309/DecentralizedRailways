@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ class FogNodeSubscriber implements Runnable {
     private final String brokerUrl;
     private final String nodeTopic; //topic where each node is subscribed
     private final String clientId;
+    private final String nodeName;
     private final DataBaseManager dataBaseManager;
     private String message;
     private String attribute;
@@ -27,10 +29,11 @@ class FogNodeSubscriber implements Runnable {
     private String trainId;
     private String responseTopic;
 
-    public FogNodeSubscriber(String broker, String nodeTopic, String clientId, DataBaseManager dataBaseManager) {
+    public FogNodeSubscriber(String broker, String nodeTopic, String nodeName, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
         this.nodeTopic = nodeTopic;
-        this.clientId = clientId;
+        this.nodeName = nodeName;
+        this.clientId = "FogNode_" + nodeName;
         this.dataBaseManager = dataBaseManager;
         jsonMessage = new JSONObject();
         devicesExpected = 0;
@@ -57,12 +60,10 @@ class FogNodeSubscriber implements Runnable {
                             "logLevel", logLevel.name(),
                             attribute, data));
                     devicesExpected++;
-                    if(devicesExpected==5){
+                    if (devicesExpected == 5) {
                         dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
                         devicesExpected = 0;
                     }
-
-
                 }
 
                 @Override
@@ -103,38 +104,43 @@ class FogNodeSubscriber implements Runnable {
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 15) {
-                    sendResponse(client, trainId + " speed too low at " + clientId);
+                    sendResponse(client, trainId + " speed too low at " + nodeName);
                 }
                 break;
             case "Temperature":
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 25) {
-                    sendResponse(client, trainId + " temperature too low at " + clientId);
+                    sendResponse(client, trainId + " temperature too low at " + nodeName);
                 }
                 break;
             case "Door status":
                 valueStr = extractValue(data);
                 if ("open".equals(valueStr)) {
-                    sendResponse(client, trainId + " doors are open " + clientId);
+                    sendResponse(client, trainId + " doors are open " + nodeName);
                 }
                 break;
             case "Light status":
                 valueStr = extractValue(data);
                 if ("off".equals(valueStr)) {
-                    sendResponse(client, trainId + " lights are off " + clientId);
+                    sendResponse(client, trainId + " lights are off " + nodeName);
                 }
                 break;
         }
     }
 
     private String extractValue(String data) {
-        return data.split(" ")[0];
+        return data.split("\\s|_")[0];
     }
 
-    private void sendResponse(MqttClient client, String responseMessage) {
+    private void sendResponse(MqttClient client, String message) {
         try {
-            client.publish("responseTopic/"+responseTopic, responseMessage.getBytes(), 1, false);
+            Date time = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            String formattedTime = sdf.format(time);
+
+            String responseMessage = "[" + formattedTime + "] " + message;
+            client.publish("responseTopic/" + responseTopic, responseMessage.getBytes(), 1, false);
         } catch (MqttException e) {
             logger.error("{} failed to send response message", clientId);
         }

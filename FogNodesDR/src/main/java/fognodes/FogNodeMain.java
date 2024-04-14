@@ -43,9 +43,8 @@ public class FogNodeMain {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String nodeName = jsonObject.getString("stop_name");
-                String clientId = "FogNodeSubscriber_" + nodeName.substring(nodeName.lastIndexOf('/') + 1);
                 String topic = "devices/" + nodeName + "/#";
-                new Thread(new FogNodeSubscriber(broker, topic, clientId, dataBaseManager)).start();
+                new Thread(new FogNodeSubscriber(broker, topic, nodeName, dataBaseManager)).start();
             }
 
             connection.disconnect();
