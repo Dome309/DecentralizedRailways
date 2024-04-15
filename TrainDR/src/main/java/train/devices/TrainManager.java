@@ -8,6 +8,9 @@ import org.json.JSONObject;
 import train.UI.TrainCustomWaypoint;
 
 import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -15,6 +18,7 @@ import java.net.URL;
 
 import static fognodes.UI.StartUI.*;
 import static train.TrainMain.map;
+import static train.UI.TrainWaypointRender.getColorForLabel;
 
 public class TrainManager extends Device {
     private static final String STOPS_ID_API = "https://www.dati.lombardia.it/resource/j5jz-kvqn.json";
@@ -84,7 +88,11 @@ public class TrainManager extends Device {
         String message = new String(mqttMessage.getPayload());
         logger.info("{} received message on nodeTopic: {} Message: {}", clientId, node, message);
         try {
-            errorTextAreaDocument.insertString(errorTextAreaDocument.getLength(), message + "\n", null);
+            Color color = getColorForLabel(trainID);
+            SimpleAttributeSet squareAttribute = new SimpleAttributeSet();
+            StyleConstants.setForeground(squareAttribute, color);
+            errorTextAreaDocument.insertString(errorTextAreaDocument.getLength(), "■", squareAttribute);
+            errorTextAreaDocument.insertString(errorTextAreaDocument.getLength(), " " + message + "\n", null);
         } catch (BadLocationException e) {
             logger.error(e.getMessage());
         }

@@ -39,7 +39,7 @@ public class TrainWaypointRender implements WaypointRenderer<Waypoint> {
         }
     }
 
-    private Color getColorForLabel(String label) {
+    public static Color getColorForLabel(String label) {
         if (label.startsWith("RE")) {
             return Color.RED;
         } else if (label.startsWith("X")) {
