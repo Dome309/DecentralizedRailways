@@ -12,6 +12,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -36,19 +37,7 @@ public class TrainManager extends Device {
 
     public String printStationCoordinates(String station) {
         try {
-            String apiUrl = STOPS_ID_API + "?stop_name=" + station.replace(" ", "%20");
-            HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
-            conn.setRequestMethod("GET");
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
-
-            JSONArray jsonArray = new JSONArray(response.toString());
+            JSONArray jsonArray = getStationCoordinates(station);
 
             if (!jsonArray.isEmpty()) {
                 JSONObject stationInfo = jsonArray.getJSONObject(0);
@@ -63,10 +52,26 @@ public class TrainManager extends Device {
                 System.out.println("Station " + station + " not found.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("API error");
         }
 
         return msg;
+    }
+
+    private JSONArray getStationCoordinates(String station) throws IOException {
+        String apiUrl = STOPS_ID_API + "?stop_name=" + station.replace(" ", "%20");
+        HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
+        conn.setRequestMethod("GET");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+        reader.close();
+
+        return new JSONArray(response.toString());
     }
 
     public static TrainCustomWaypoint createTrainWaypoint(double latitude, double longitude, String trainID) {
@@ -79,7 +84,7 @@ public class TrainManager extends Device {
         try {
             client.publish(mainTopic + node + "/" + trainManagerSubTopic, message.getBytes(), 1, false);
         } catch (MqttException e) {
-            e.printStackTrace();
+            logger.error("Train manager publish failed");
         }
     }
 
