@@ -1,5 +1,7 @@
 package train.devices;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -11,6 +13,7 @@ public abstract class Device implements MqttCallback {
     protected String mainTopic = "devices/";
     protected boolean deviceStatus;
     public static int numberOfDevices = 0;
+    private static final Logger logger = LogManager.getLogger(Device.class);
 
     public Device(String clientId) {
         this.deviceStatus = false;
@@ -23,13 +26,13 @@ public abstract class Device implements MqttCallback {
             client.setCallback(this);
             client.connect();
         } catch (MqttException e) {
-            e.printStackTrace();
+            logger.warn("{} creation failed", clientId);
         }
     }
 
     @Override
     public void connectionLost(Throwable cause) {
-        System.out.println(clientId + " connection lost: " + cause.getMessage());
+        logger.warn("{} connection lost: {}", clientId, cause.getMessage());
     }
 
     @Override
@@ -46,12 +49,12 @@ public abstract class Device implements MqttCallback {
 
     public void connectDevice() {
         this.deviceStatus = true;
-        System.out.println(clientId + " is activated ");
+        logger.info("{} is activated", clientId);
     }
 
     public void disconnectDevice() {
         this.deviceStatus = false;
-        System.out.println(clientId + " is deactivated ");
+        logger.info("{} is deactivated ", clientId);
     }
 
     public boolean checkDeviceStatus() {

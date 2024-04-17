@@ -17,8 +17,7 @@ public class TrainWaypointRender implements WaypointRenderer<Waypoint> {
         int[] xPoints = {(int) point.getX(), (int) point.getX() - HALF_SIZE, (int) point.getX() + HALF_SIZE};
         int[] yPoints = {(int) point.getY(), (int) point.getY() - SIZE, (int) point.getY() - SIZE};
 
-        if (waypoint instanceof TrainCustomWaypoint) {
-            TrainCustomWaypoint customWaypoint = (TrainCustomWaypoint) waypoint;
+        if (waypoint instanceof TrainCustomWaypoint customWaypoint) {
             String label = customWaypoint.getLabel();
             Color color = getColorForLabel(label);
             graphics.setColor(color);

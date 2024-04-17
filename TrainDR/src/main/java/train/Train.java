@@ -4,8 +4,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import train.devices.*;
 
 public class Train implements Runnable {
-    private String trainID;
-    private String[] fogNodes; //Train route
+    private final String trainID;
+    private final String[] fogNodes; //Train route
     private int currentLocation; //Index for get the current location of the train
     private TrainManager trainManager;
     private SpeedControl speedControl; //Speed device declaration

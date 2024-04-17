@@ -50,7 +50,6 @@ public class FogNodeMain {
             connection.disconnect();
         } catch (IOException e) {
             logger.error("Network creation failed");
-            e.printStackTrace();
         }
     }
 }

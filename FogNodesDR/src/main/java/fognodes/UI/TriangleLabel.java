@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TriangleLabel extends JPanel {
-    private Color color;
+    private final Color color;
 
     TriangleLabel(Color color) {
         this.color = color;
