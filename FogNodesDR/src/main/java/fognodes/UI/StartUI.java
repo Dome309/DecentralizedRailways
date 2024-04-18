@@ -132,8 +132,8 @@ public class StartUI {
         label4.setBounds(298, 165, 100, 20);
         label4.setFont(new Font("Arial", Font.BOLD, 16));
 
-        JLabel label5 = new JLabel("Error logs");
-        label5.setBounds(160, 240, 200, 30);
+        JLabel label5 = new JLabel("Warning logs");
+        label5.setBounds(136, 240, 200, 30);
         label5.setFont(new Font("Arial", Font.BOLD, 24));
 
         legendPanel.add(legendTitle);
