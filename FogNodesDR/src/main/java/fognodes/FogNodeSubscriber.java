@@ -104,26 +104,26 @@ class FogNodeSubscriber implements Runnable {
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 15) {
-                    sendResponse(client, trainId + " speed too low at " + nodeName);
+                    sendResponse(client, trainId + " speed too low at " + nodeName, "speed");
                 }
                 break;
             case "Temperature":
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 25) {
-                    sendResponse(client, trainId + " temperature too low at " + nodeName);
+                    sendResponse(client, trainId + " temperature too low at " + nodeName, "temperature");
                 }
                 break;
             case "Door status":
                 valueStr = extractValue(data);
                 if ("open".equals(valueStr)) {
-                    sendResponse(client, trainId + " doors are open " + nodeName);
+                    sendResponse(client, trainId + " doors are open " + nodeName, "door");
                 }
                 break;
             case "Light status":
                 valueStr = extractValue(data);
                 if ("off".equals(valueStr)) {
-                    sendResponse(client, trainId + " lights are off " + nodeName);
+                    sendResponse(client, trainId + " lights are off " + nodeName, "light");
                 }
                 break;
         }
@@ -133,14 +133,14 @@ class FogNodeSubscriber implements Runnable {
         return data.split("\\s|_")[0];
     }
 
-    private void sendResponse(MqttClient client, String message) {
+    private void sendResponse(MqttClient client, String message, String type) {
         try {
             Date time = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
             String formattedTime = sdf.format(time);
 
             String responseMessage = "[" + formattedTime + "] " + message;
-            client.publish("responseTopic/" + responseTopic, responseMessage.getBytes(), 1, false);
+            client.publish("responseTopic/" + responseTopic + "/" + type, responseMessage.getBytes(), 1, false);
         } catch (MqttException e) {
             logger.error("{} failed to send response message", clientId);
         }
