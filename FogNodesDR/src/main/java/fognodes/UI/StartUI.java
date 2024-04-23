@@ -15,9 +15,13 @@ import train.UI.TrainWaypointRender;
 import javax.swing.*;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class StartUI {
@@ -48,6 +52,7 @@ public class StartUI {
 
         //Create a set of waypoints
         Set<DefaultWaypoint> waypoints = new HashSet<>();
+        Map<DefaultWaypoint, String> waypointLabels = new HashMap<>();
 
         try {
             //Fetch JSON data from the provided URL
@@ -58,12 +63,21 @@ public class StartUI {
             for (JsonNode node : jsonNode) {
                 double latitude = node.get("stop_lat").asDouble();
                 double longitude = node.get("stop_lon").asDouble();
+                String stopName = node.get("stop_name").asText();
                 DefaultWaypoint waypoint = new DefaultWaypoint(new GeoPosition(latitude, longitude));
                 waypoints.add(waypoint);
+                waypointLabels.put(waypoint, stopName);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mapKit.getMainMap().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+        });
 
         //Create a WaypointPainter to paint the station waypoints on the map
         WaypointPainter<DefaultWaypoint> stationWaypointPainter = new WaypointPainter<>();
