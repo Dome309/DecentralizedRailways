@@ -17,6 +17,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class StartUI {
     private static CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>();
     private static JTextPane errorTextArea = new JTextPane();
     public static StyledDocument errorTextAreaDocument = errorTextArea.getStyledDocument();
+    private static double TOLERANCE = 0.2;
 
     public void startMap() {
         //Creating the frame
@@ -75,7 +77,17 @@ public class StartUI {
         mapKit.getMainMap().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                Point2D point = e.getPoint();
+                GeoPosition position = mapKit.getMainMap().convertPointToGeoPosition(point);
 
+                for (Waypoint waypoint : waypoints) {
+                    GeoPosition wpPos = waypoint.getPosition();
+                    double distance = calculateDistance(position.getLatitude(), position.getLongitude(), wpPos.getLatitude(), wpPos.getLongitude());
+                    if (distance < TOLERANCE) {
+                        String label = waypointLabels.get(waypoint);
+                        new NodeUI(label);
+                    }
+                }
             }
         });
 
@@ -92,6 +104,16 @@ public class StartUI {
 
         //Display the JFrame
         frame.setVisible(true);
+    }
+
+    private static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final double APPROX_DEGREE_LENGTH = 111.12;
+        double deltaLat = lat2 - lat1;
+        double deltaLon = lon2 - lon1;
+
+        double distance = Math.sqrt(deltaLat * deltaLat + deltaLon * deltaLon) * APPROX_DEGREE_LENGTH;
+
+        return distance;
     }
 
     public void addWaypoints(TrainCustomWaypoint newWaypoint) {
