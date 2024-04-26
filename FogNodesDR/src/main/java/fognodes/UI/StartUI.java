@@ -34,7 +34,7 @@ public class StartUI {
     private static CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>();
     private static JTextPane errorTextArea = new JTextPane();
     public static StyledDocument errorTextAreaDocument = errorTextArea.getStyledDocument();
-    private static double TOLERANCE = 0.2;
+    private static final double TOLERANCE = 0.2;
 
     public void startMap() {
         //Creating the frame
@@ -85,7 +85,8 @@ public class StartUI {
                     double distance = calculateDistance(position.getLatitude(), position.getLongitude(), wpPos.getLatitude(), wpPos.getLongitude());
                     if (distance < TOLERANCE) {
                         String label = waypointLabels.get(waypoint);
-                        new NodeUI(label);
+                        GeoPosition pos = waypoint.getPosition();
+                        new NodeUI(label, pos);
                     }
                 }
             }
@@ -111,9 +112,7 @@ public class StartUI {
         double deltaLat = lat2 - lat1;
         double deltaLon = lon2 - lon1;
 
-        double distance = Math.sqrt(deltaLat * deltaLat + deltaLon * deltaLon) * APPROX_DEGREE_LENGTH;
-
-        return distance;
+        return Math.sqrt(deltaLat * deltaLat + deltaLon * deltaLon) * APPROX_DEGREE_LENGTH;
     }
 
     public void addWaypoints(TrainCustomWaypoint newWaypoint) {
