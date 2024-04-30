@@ -21,6 +21,7 @@ public class FogNodeMain {
         StartNetwork(apiUrl);
     }
 
+    //method that allows network start
     public static void StartNetwork(String apiUrl) {
         try {
             logger.info("CREATING NETWORK...");

@@ -8,6 +8,8 @@ import java.awt.*;
 import java.util.Objects;
 
 public class NodeUI {
+
+    //this constructor create a frame with info relative to the specific node
     public NodeUI(String label, GeoPosition pos){
         JFrame nodeFrame = new JFrame("Node Information");
         nodeFrame.setSize(300, 450);

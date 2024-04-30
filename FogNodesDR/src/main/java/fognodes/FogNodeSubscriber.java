@@ -85,6 +85,7 @@ class FogNodeSubscriber implements Runnable {
         }
     }
 
+    //node splits the message receive for extract attribute and data
     private void splitMessage(String message, MqttClient client) throws ParseException {
         String[] splitMsg = message.split(": ");
         this.attribute = splitMsg[0];
@@ -92,6 +93,7 @@ class FogNodeSubscriber implements Runnable {
         checkData(client, attribute, data);
     }
 
+    //method for checking data values extracted
     private synchronized void checkData(MqttClient client, String attribute, String data) throws ParseException {
         String valueStr;
         double valueDouble;
@@ -129,10 +131,12 @@ class FogNodeSubscriber implements Runnable {
         }
     }
 
+    //method for separating numbers from units
     private String extractValue(String data) {
         return data.split("\\s|_")[0];
     }
 
+    //node can send a message to the relative train
     private void sendResponse(MqttClient client, String message, String type) {
         try {
             Date time = new Date();

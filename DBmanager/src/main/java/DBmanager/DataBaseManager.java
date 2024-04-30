@@ -16,6 +16,7 @@ public class DataBaseManager {
     private JSONObject jsonMessage;
     private static final Logger logger = LogManager.getLogger(DataBaseManager.class);
 
+    //starting database
     public void startDB() {
         String databaseName = "RailwayDB";
         try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
@@ -36,6 +37,7 @@ public class DataBaseManager {
         }
     }
 
+    //method for creating the collection name on the database
     public void setCollectionName(String collectionName, JSONObject jsonMessage, Date date){
         this.collectionName = collectionName;
         this.jsonMessage = jsonMessage;

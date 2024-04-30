@@ -7,12 +7,13 @@ public class Train implements Runnable {
     private final String trainID;
     private final String[] fogNodes; //Train route
     private int currentLocation; //Index for get the current location of the train
-    private TrainManager trainManager;
+    private TrainManager trainManager; //device for communicate TrainID
     private SpeedControl speedControl; //Speed device declaration
     private TemperatureControl temperatureControl; //Temperature device declaration
     private DoorControl doorControl; //Door control device declaration
     private LightingControl lightingControl; //Light control device declaration
 
+    //constructor of the class
     public Train(String name, String[] fogNodes) throws MqttException {
         this.trainID = name;
         this.fogNodes = fogNodes;
@@ -63,12 +64,14 @@ public class Train implements Runnable {
         }
     }
 
+    //method for update the values of devices
     private void deviceUpdate() {
         speedControl.speedUpdate();
         temperatureControl.temperatureUpdate();
         lightingControl.checkStatus();
     }
 
+    //method for sending the data acquired to the current node
     private void sendUpdate(String currentNode) {
         System.out.println("All devices are sending data to... " + currentNode);
         trainManager.sendDataToFogNode(currentNode);
@@ -78,6 +81,7 @@ public class Train implements Runnable {
         lightingControl.sendDataToFogNode(currentNode);
     }
 
+    //method for connecting every device on board to MQTT broker
     private void connectAllDevices() {
         trainManager.connectDevice();
         speedControl.connectDevice();
@@ -86,6 +90,7 @@ public class Train implements Runnable {
         lightingControl.connectDevice();
     }
 
+    //method for disconnecting every device on board to MQTT broker
     private void disconnectAllDevices() {
         trainManager.disconnectDevice();
         speedControl.disconnectDevice();

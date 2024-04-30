@@ -11,6 +11,7 @@ public class TrainWaypointRender implements WaypointRenderer<Waypoint> {
     private static final int SIZE = 14;
     private static final int HALF_SIZE = SIZE / 2;
 
+    //method for draw a train waypoint
     @Override
     public void paintWaypoint(Graphics2D graphics, JXMapViewer map, Waypoint waypoint) {
         Point2D point = map.getTileFactory().geoToPixel(waypoint.getPosition(), map.getZoom());
@@ -38,6 +39,7 @@ public class TrainWaypointRender implements WaypointRenderer<Waypoint> {
         }
     }
 
+    //method for selecting color based on train type
     public static Color getColorForLabel(String label) {
         if (label.startsWith("RE")) {
             return Color.RED;

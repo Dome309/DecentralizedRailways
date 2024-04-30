@@ -9,6 +9,8 @@ import java.awt.geom.Ellipse2D;
 
 
 public class WaypointRender implements WaypointRenderer<DefaultWaypoint> {
+
+    //draws node waypoints
     @Override
     public void paintWaypoint(Graphics2D graphics, JXMapViewer map, DefaultWaypoint waypoint) {
         graphics.setColor(Color.decode("#006400"));

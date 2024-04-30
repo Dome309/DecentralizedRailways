@@ -11,6 +11,7 @@ public class TriangleLabel extends JPanel {
         setPreferredSize(new Dimension(20, 20));
     }
 
+    //draws UI triangles
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

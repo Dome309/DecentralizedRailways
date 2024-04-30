@@ -36,6 +36,7 @@ public class StartUI {
     public static StyledDocument errorTextAreaDocument = errorTextArea.getStyledDocument();
     private static final double TOLERANCE = 0.2;
 
+    //displays the map
     public void startMap() {
         //Creating the frame
         frame.setSize(1280, 720);
@@ -74,6 +75,7 @@ public class StartUI {
             e.printStackTrace();
         }
 
+        //add a mouse listener for node click actions
         mapKit.getMainMap().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -107,6 +109,7 @@ public class StartUI {
         frame.setVisible(true);
     }
 
+    //method that calculate the distance between user click and nearest node
     private static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         final double APPROX_DEGREE_LENGTH = 111.12;
         double deltaLat = lat2 - lat1;
@@ -115,6 +118,7 @@ public class StartUI {
         return Math.sqrt(deltaLat * deltaLat + deltaLon * deltaLon) * APPROX_DEGREE_LENGTH;
     }
 
+    //method that allow to add train waypoints to the map
     public void addWaypoints(TrainCustomWaypoint newWaypoint) {
         waypointsTrain.add(newWaypoint);
         trainWaypointPainter.setWaypoints(waypointsTrain);
@@ -125,7 +129,7 @@ public class StartUI {
         mapKit.repaint();
     }
 
-    //method for creating
+    //method for creating legend components
     private void createUILegendComponents() {
         JPanel legendPanel = new JPanel();
         legendPanel.setLayout(null);
