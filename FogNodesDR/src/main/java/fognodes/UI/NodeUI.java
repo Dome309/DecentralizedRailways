@@ -9,46 +9,63 @@ import java.util.Objects;
 
 public class NodeUI {
 
-    //this constructor create a frame with info relative to the specific node
     public NodeUI(String label, GeoPosition pos){
-        JFrame nodeFrame = new JFrame("Node Information");
-        nodeFrame.setSize(300, 450);
-        nodeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        nodeFrame.setLayout(new GridLayout(2, 1));
-        nodeFrame.setResizable(false);
-        nodeFrame.setLocationRelativeTo(null);
-        
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
-        
-        ImageIcon imgNode = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/node.png")));
-        JLabel labelIcon = new JLabel(imgNode);
-        labelIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
-        infoPanel.add(labelIcon);
-        
-        JLabel labelInfo = new JLabel(label);
-        labelInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        infoPanel.add(labelInfo);
-
-        JPanel coordinatePanel = getjPanel(pos);
+        JFrame nodeFrame = createNodeFrame();
+        JPanel infoPanel = createInfoPanel(label);
+        JPanel coordinatePanel = createCoordinatePanel(pos);
 
         nodeFrame.add(infoPanel);
         nodeFrame.add(coordinatePanel);
         nodeFrame.setVisible(true);
     }
 
-    private JPanel getjPanel(GeoPosition pos) {
+    private JFrame createNodeFrame() {
+        JFrame nodeFrame = new JFrame("Node Information");
+        nodeFrame.setSize(300, 450);
+        nodeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        nodeFrame.setLayout(new GridLayout(3, 1));
+        nodeFrame.setResizable(false);
+        nodeFrame.setLocationRelativeTo(null);
+        return nodeFrame;
+    }
+
+    private JPanel createInfoPanel(String label) {
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        ImageIcon imgNode = new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/node.png")));
+        JLabel labelIcon = new JLabel(imgNode);
+        labelIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        infoPanel.add(labelIcon);
+
+        JLabel labelInfo = new JLabel(label);
+        labelInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        infoPanel.add(labelInfo);
+
+        return infoPanel;
+    }
+
+    private JPanel createCoordinatePanel(GeoPosition pos) {
         JPanel coordinatePanel = new JPanel(new GridLayout(1, 2));
 
-        double latitude = pos.getLatitude();
-        double longitude = pos.getLongitude();
+        coordinatePanel.add(createCoordinateField("Latitude:", Double.toString(pos.getLatitude())));
+        coordinatePanel.add(createCoordinateField("Longitude:", Double.toString(pos.getLongitude())));
 
-        JLabel labelLatitude = new JLabel("Latitude: " + latitude);
-        coordinatePanel.add(labelLatitude);
-
-        JLabel labelLongitude = new JLabel("Longitude: " + longitude);
-        coordinatePanel.add(labelLongitude);
         return coordinatePanel;
+    }
+
+    private JPanel createCoordinateField(String label, String value) {
+        JPanel fieldPanel = new JPanel();
+        fieldPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        JLabel labelField = new JLabel(label);
+        fieldPanel.add(labelField);
+
+        JTextField textField = new JTextField(value, 10);
+        textField.setEditable(false);
+        fieldPanel.add(textField);
+
+        return fieldPanel;
     }
 }
