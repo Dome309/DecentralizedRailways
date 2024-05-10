@@ -28,6 +28,7 @@ class FogNodeSubscriber implements Runnable {
     private int devicesExpected;
     private String trainId;
     private String responseTopic;
+    private boolean dataIsWarn;
 
     public FogNodeSubscriber(String broker, String nodeTopic, String nodeName, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
@@ -54,8 +55,13 @@ class FogNodeSubscriber implements Runnable {
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) throws ParseException {
                     message = new String(mqttMessage.getPayload());
                     logger.info("{} received message on nodeTopic: {} Message: {}", clientId, nodeTopic, message);
-                    Level logLevel = logger.getLevel();
+                    Level logLevel;
                     splitMessage(message, client);
+                    if(dataIsWarn){
+                        logLevel = Level.WARN;
+                    }else {
+                        logLevel = Level.INFO;
+                    }
                     jsonMessage.putAll(Map.of(
                             "logLevel", logLevel.name(),
                             attribute, data));
@@ -107,6 +113,7 @@ class FogNodeSubscriber implements Runnable {
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 15) {
                     sendResponse(client, trainId + " speed too low at " + nodeName, "speed");
+                    this.dataIsWarn = true;
                 }
                 break;
             case "Temperature":
@@ -114,18 +121,21 @@ class FogNodeSubscriber implements Runnable {
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
                 if (valueDouble < 25) {
                     sendResponse(client, trainId + " temperature too low at " + nodeName, "temperature");
+                    this.dataIsWarn = true;
                 }
                 break;
             case "Door status":
                 valueStr = extractValue(data);
                 if ("open".equals(valueStr)) {
                     sendResponse(client, trainId + " doors are open " + nodeName, "door");
+                    this.dataIsWarn = true;
                 }
                 break;
             case "Light status":
                 valueStr = extractValue(data);
                 if ("off".equals(valueStr)) {
                     sendResponse(client, trainId + " lights are off " + nodeName, "light");
+                    this.dataIsWarn = true;
                 }
                 break;
         }
