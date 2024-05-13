@@ -15,7 +15,7 @@ public class TemperatureControl extends Device {
     public void sendDataToFogNode(String node) {
         String message = "Temperature: " + String.format("%.2f", trainTemperature) + " °C";
         try {
-            client.publish(mainTopic + node + "/" + tempSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + tempSubTopic, message.getBytes(), 2, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

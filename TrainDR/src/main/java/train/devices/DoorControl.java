@@ -35,7 +35,7 @@ public class DoorControl extends Device {
         }
         String message = "Door status: " + closeOrOpen;
         try {
-            client.publish(mainTopic + node + "/" + doorSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + doorSubTopic, message.getBytes(), 2, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

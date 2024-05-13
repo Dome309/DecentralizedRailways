@@ -24,7 +24,7 @@ public class SpeedControl extends Device {
     public void sendDataToFogNode(String node) {
         String message = "Speed: " + String.format("%.2f", trainSpeed) + " km/h";
         try {
-            client.publish(mainTopic + node + "/" + speedSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + speedSubTopic, message.getBytes(), 2, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

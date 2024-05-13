@@ -154,7 +154,7 @@ class FogNodeSubscriber implements Runnable {
             String formattedTime = sdf.format(time);
 
             String responseMessage = "[" + formattedTime + "] " + message;
-            client.publish("responseTopic/" + responseTopic + "/" + type, responseMessage.getBytes(), 1, false);
+            client.publish("responseTopic/" + responseTopic + "/" + type, responseMessage.getBytes(), 2, false);
         } catch (MqttException e) {
             logger.error("{} failed to send response message", clientId);
         }

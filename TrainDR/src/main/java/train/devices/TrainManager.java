@@ -82,7 +82,7 @@ public class TrainManager extends Device {
     public void sendDataToFogNode(String node) {
         String message = "Train: " + clientId;
         try {
-            client.publish(mainTopic + node + "/" + trainManagerSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + trainManagerSubTopic, message.getBytes(), 2, false);
         } catch (MqttException e) {
             logger.error("Train manager publish failed");
         }

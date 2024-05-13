@@ -27,7 +27,7 @@ public class LightingControl extends Device {
         }
         String message = "Light status: " + lightOnOff;
         try {
-            client.publish(mainTopic + node + "/" + lightSubTopic, message.getBytes(), 1, false);
+            client.publish(mainTopic + node + "/" + lightSubTopic, message.getBytes(), 2, false);
         } catch (MqttException e) {
             e.printStackTrace();
         }
