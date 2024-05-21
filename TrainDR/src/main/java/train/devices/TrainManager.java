@@ -32,7 +32,7 @@ public class TrainManager extends Device {
     public TrainManager(String clientId) throws MqttException {
         super(clientId + "_manager");
         this.trainID = clientId;
-        client.subscribe("responseTopic/" + clientId + "_manager" + "/#");
+        client.subscribe("responseTopic/" + clientId + "_manager" + "/#", 2);
     }
 
     public String printStationCoordinates(String station) {

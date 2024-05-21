@@ -83,7 +83,7 @@ class FogNodeSubscriber implements Runnable {
             client.connect(connOpts);
             logger.info("{} connected to broker", clientId);
 
-            client.subscribe(nodeTopic);
+            client.subscribe(nodeTopic, 2);
             logger.info("{} subscribed to nodeTopic: {}", clientId, nodeTopic);
 
         } catch (MqttException e) {
