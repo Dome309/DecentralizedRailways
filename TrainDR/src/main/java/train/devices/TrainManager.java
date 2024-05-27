@@ -91,7 +91,7 @@ public class TrainManager extends Device {
     @Override
     public void messageArrived(String node, MqttMessage mqttMessage) {
         String message = new String(mqttMessage.getPayload());
-        logger.info("{} received message on nodeTopic: {} Message: {}", clientId, node, message);
+        logger.warn("{} received message on nodeTopic: {} Message: {}", clientId, node, message);
         try {
             Color color = getColorForLabel(trainID);
             SimpleAttributeSet squareAttribute = new SimpleAttributeSet();

@@ -16,7 +16,7 @@ public class DataBaseManager {
     private JSONObject jsonMessage;
     private static final Logger logger = LogManager.getLogger(DataBaseManager.class);
 
-    //starting database
+    //insert data to DB
     public void insertTrainLog() {
         String databaseName = "RailwayDB";
         try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
