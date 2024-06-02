@@ -55,16 +55,9 @@ class FogNodeSubscriber implements Runnable {
                 public void messageArrived(String nodeTopic, MqttMessage mqttMessage) throws ParseException {
                     message = new String(mqttMessage.getPayload());
                     logger.info("{} received message on nodeTopic: {} Message: {}", clientId, nodeTopic, message);
-                    Level logLevel;
                     splitMessage(message, client);
-                    if(dataIsWarn){
-                        logLevel = Level.WARN;
-                    }else {
-                        logLevel = Level.INFO;
-                    }
-                    jsonMessage.putAll(Map.of(
-                            "logLevel", logLevel.name(),
-                            attribute, data));
+                    Level logLevel = dataIsWarn ? Level.WARN : Level.INFO;
+                    jsonMessage.putAll(Map.of("logLevel", logLevel.name(), attribute, data));
                     devicesExpected++;
                     if (devicesExpected == 5) {
                         dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
