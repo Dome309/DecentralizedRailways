@@ -12,7 +12,6 @@ public abstract class Device implements MqttCallback {
     protected MemoryPersistence persistence;
     protected String mainTopic = "devices/";
     protected boolean deviceStatus;
-    public static int numberOfDevices = 0;
     private static final Logger logger = LogManager.getLogger(Device.class);
 
     public Device(String clientId) {
@@ -20,7 +19,6 @@ public abstract class Device implements MqttCallback {
         this.brokerUrl = "tcp://localhost:1883";
         this.clientId = clientId;
         this.persistence = new MemoryPersistence();
-        numberOfDevices++;
         try {
             client = new MqttClient(brokerUrl, clientId, persistence);
             client.setCallback(this);

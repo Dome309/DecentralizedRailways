@@ -7,12 +7,15 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.simple.JSONObject;
-
+import java.util.concurrent.TimeUnit;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 class FogNodeSubscriber implements Runnable {
     private static final Logger logger = LogManager.getLogger(FogNodeSubscriber.class);
@@ -25,10 +28,12 @@ class FogNodeSubscriber implements Runnable {
     private String attribute;
     private String data;
     private JSONObject jsonMessage;
-    private int devicesExpected;
     private String trainId;
     private String responseTopic;
     private boolean dataIsWarn;
+    private static final int TIMEOUT_SECONDS = 10;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> futureTask;
 
     public FogNodeSubscriber(String broker, String nodeTopic, String nodeName, DataBaseManager dataBaseManager) {
         this.brokerUrl = broker;
@@ -37,7 +42,6 @@ class FogNodeSubscriber implements Runnable {
         this.clientId = "FogNode_" + nodeName;
         this.dataBaseManager = dataBaseManager;
         jsonMessage = new JSONObject();
-        devicesExpected = 0;
     }
 
     //each node try the connection with the broker and subscribe to a topic which is different between each node
@@ -58,11 +62,15 @@ class FogNodeSubscriber implements Runnable {
                     splitMessage(message, client);
                     Level logLevel = dataIsWarn ? Level.WARN : Level.INFO;
                     jsonMessage.putAll(Map.of("logLevel", logLevel.name(), attribute, data));
-                    devicesExpected++;
-                    if (devicesExpected == 5) {
-                        dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
-                        devicesExpected = 0;
+                    //delete the old task if exist
+                    if (futureTask != null) {
+                        futureTask.cancel(false);
                     }
+                    //create a new task for load data to db
+                    futureTask = scheduler.schedule(this::loadDataToDatabase, TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                }
+                private void loadDataToDatabase() {
+                    dataBaseManager.setCollectionName(clientId, jsonMessage, new Date());
                 }
 
                 @Override
