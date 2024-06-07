@@ -120,7 +120,7 @@ class FogNodeSubscriber implements Runnable {
             case "Temperature":
                 valueStr = extractValue(data);
                 valueDouble = DecimalFormat.getNumberInstance().parse(valueStr).doubleValue();
-                if (valueDouble < 25) {
+                if (valueDouble < 23) {
                     sendResponse(client, trainId + " temperature too low at " + nodeName, "temperature");
                     this.dataIsWarn = true;
                 }

@@ -50,7 +50,7 @@ public class FogNodeMain {
 
             connection.disconnect();
         } catch (IOException e) {
-            logger.error("Network creation failed");
+            logger.error("Network creation failed due to API error: {}", e.getMessage());
         }
     }
 }
