@@ -31,7 +31,7 @@ class FogNodeSubscriber implements Runnable {
     private String trainId;
     private String responseTopic;
     private boolean dataIsWarn;
-    private static final int TIMEOUT_SECONDS = 10;
+    private static final int TIMEOUT_SECONDS = 5;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> futureTask;
 
@@ -151,7 +151,7 @@ class FogNodeSubscriber implements Runnable {
     private void sendResponse(MqttClient client, String message, String type) {
         try {
             Date time = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formattedTime = sdf.format(time);
 
             String responseMessage = "[" + formattedTime + "] " + message;

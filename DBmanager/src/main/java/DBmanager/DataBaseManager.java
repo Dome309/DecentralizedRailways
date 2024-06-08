@@ -1,5 +1,8 @@
 package DBmanager;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +25,11 @@ public class DataBaseManager {
         try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
             MongoDatabase database = mongoClient.getDatabase(databaseName);
             MongoCollection<Document> collection = database.getCollection(collectionName);
+
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            String formattedDate = localDateTime.format(formatter);
+
             Document document = new Document()
                     .append("logLevel", jsonMessage.get("logLevel"))
                     .append("train", jsonMessage.get("Train"))
@@ -29,7 +37,7 @@ public class DataBaseManager {
                     .append("temp", jsonMessage.get("Temperature"))
                     .append("door", jsonMessage.get("Door status"))
                     .append("light", jsonMessage.get("Light status"))
-                    .append("date", date);
+                    .append("date", formattedDate);
             collection.insertOne(document);
             logger.info("{} data insert completed", databaseName);
         } catch (Exception exe) {
@@ -37,7 +45,6 @@ public class DataBaseManager {
         }
     }
 
-    //method for creating the collection name on the database
     public void setCollectionName(String collectionName, JSONObject jsonMessage, Date date){
         this.collectionName = collectionName;
         this.jsonMessage = jsonMessage;

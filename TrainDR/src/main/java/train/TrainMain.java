@@ -30,7 +30,7 @@ public class TrainMain {
             List<Thread> trainThreads = createAndStartThreads(routes);
             waitAllThreads(trainThreads);
         } catch (Exception e) {
-            logger.error("API ERROR");
+            logger.error("Train creation failed due to API error: {}", e.getMessage());
         }
     }
 
